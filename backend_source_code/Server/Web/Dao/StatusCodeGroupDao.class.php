@@ -1,32 +1,34 @@
 <?php
 /**
- * @name eolinker open source，eolinker开源版本
- * @link https://www.eolinker.com
- * @package eolinker
- * @author www.eolinker.com 广州银云信息科技有限公司 2015-2018
-
- * eolinker，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
- * 如在使用的过程中有任何问题，可通过http://help.eolinker.com寻求帮助
+ * @name EOLINKER ams open source，EOLINKER open source version
+ * @link https://global.eolinker.com/
+ * @package EOLINKER
+ * @author www.eolinker.com eoLinker Ltd.co 2015-2018
+ * 
+ * eoLinker is the world's leading and domestic largest online API interface management platform, providing functions such as automatic generation of API documents, API automated testing, Mock testing, team collaboration, etc., aiming to solve the problem of low development efficiency caused by separation of front and rear ends.
+ * If you have any problems during the process of use, please join the user discussion group for feedback, we will solve the problem for you with the fastest speed and best service attitude.
  *
- * 注意！eolinker开源版本遵循GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以eoLinker开源版本为基础而开发的二次版本”在互联网上流通。
- * 注意！一经发现，我们将立刻启用法律程序进行维权。
- * 再次感谢您的使用，希望我们能够共同维护国内的互联网开源文明和正常商业秩序。
+ * 
  *
+ * Website：https://global.eolinker.com/
+ * Slack：eolinker.slack.com
+ * facebook：@EoLinker
+ * twitter：@eoLinker
  */
 
 class StatusCodeGroupDao
 {
     /**
-     * 添加状态码分组
-     * @param $projectID int 项目ID
-     * @param $groupName string 分组名
+     * add group
+     * @param $projectID int projectID
+     * @param $groupName string group name
      * @return int|bool
      */
     public function addGroup(&$projectID, &$groupName)
     {
         $db = getDatabase();
 
-        $db->prepareExecute('INSERT INTO eo_project_status_code_group (eo_project_status_code_group.projectID,eo_project_status_code_group.groupName) VALUES (?,?);', array(
+        $db->prepareExecute('INSERT INTO eo_ams_project_status_code_group (eo_ams_project_status_code_group.projectID,eo_ams_project_status_code_group.groupName) VALUES (?,?);', array(
             $projectID,
             $groupName
         ));
@@ -41,10 +43,10 @@ class StatusCodeGroupDao
     }
 
     /**
-     * 添加子分组
-     * @param $projectID int 项目ID
-     * @param $groupName string 分组名
-     * @param $parentGroupID int 父分组ID
+     * add childen group
+     * @param $projectID int projectID
+     * @param $groupName string parent group
+     * @param $parentGroupID int parent groupID
      * @param $isChild
      * @return bool|int
      */
@@ -52,7 +54,7 @@ class StatusCodeGroupDao
     {
         $db = getDatabase();
 
-        $db->prepareExecute('INSERT INTO eo_project_status_code_group (eo_project_status_code_group.projectID,eo_project_status_code_group.groupName,eo_project_status_code_group.parentGroupID,eo_project_status_code_group.isChild) VALUES (?,?,?,?);', array(
+        $db->prepareExecute('INSERT INTO eo_ams_project_status_code_group (eo_ams_project_status_code_group.projectID,eo_ams_project_status_code_group.groupName,eo_ams_project_status_code_group.parentGroupID,eo_ams_project_status_code_group.isChild) VALUES (?,?,?,?);', array(
             $projectID,
             $groupName,
             $parentGroupID,
@@ -68,16 +70,16 @@ class StatusCodeGroupDao
     }
 
     /**
-     * 判断用户和分组是否匹配
-     * @param $groupID int 分组ID
-     * @param $userID int 用户ID
+     * check status code group permission
+     * @param $groupID int
+     * @param $userID int
      * @return bool|int
      */
     public function checkStatusCodeGroupPermission(&$groupID, &$userID)
     {
         $db = getDatabase();
 
-        $result = $db->prepareExecute('SELECT eo_conn_project.projectID FROM eo_conn_project INNER JOIN eo_project_status_code_group ON eo_conn_project.projectID = eo_project_status_code_group.projectID WHERE groupID = ? AND userID = ?;', array(
+        $result = $db->prepareExecute('SELECT eo_ams_conn_project.projectID FROM eo_ams_conn_project INNER JOIN eo_ams_project_status_code_group ON eo_ams_conn_project.projectID = eo_ams_project_status_code_group.projectID WHERE groupID = ? AND userID = ?;', array(
             $groupID,
             $userID
         ));
@@ -89,15 +91,15 @@ class StatusCodeGroupDao
     }
 
     /**
-     * 删除分组
-     * @param $groupID int 分组ID
+     * delete group
+     * @param $groupID int groupID
      * @return bool
      */
     public function deleteGroup(&$groupID)
     {
         $db = getDatabase();
 
-        $db->prepareExecute('DELETE FROM eo_project_status_code_group WHERE eo_project_status_code_group.groupID = ?;', array($groupID));
+        $db->prepareExecute('DELETE FROM eo_ams_project_status_code_group WHERE eo_ams_project_status_code_group.groupID = ?;', array($groupID));
 
         if ($db->getAffectRow() < 1)
             return FALSE;
@@ -106,27 +108,27 @@ class StatusCodeGroupDao
     }
 
     /**
-     * 获取分组列表
-     * @param $projectID int 项目ID
+     * get group list
+     * @param $projectID int projectID
      * @return bool|array
      */
     public function getGroupList(&$projectID)
     {
         $db = getDatabase();
 
-        $groupList = $db->prepareExecuteAll('SELECT eo_project_status_code_group.groupID,eo_project_status_code_group.groupName FROM eo_project_status_code_group WHERE projectID = ? AND isChild = 0 ORDER BY eo_project_status_code_group.groupID DESC;', array($projectID));
+        $groupList = $db->prepareExecuteAll('SELECT eo_ams_project_status_code_group.groupID,eo_ams_project_status_code_group.groupName FROM eo_ams_project_status_code_group WHERE projectID = ? AND isChild = 0 ORDER BY eo_ams_project_status_code_group.groupID DESC;', array($projectID));
 
         if (is_array($groupList))
             foreach ($groupList as &$parentGroup) {
                 $parentGroup['childGroupList'] = array();
-                $childGroup = $db->prepareExecuteAll('SELECT eo_project_status_code_group.groupID,eo_project_status_code_group.groupName,eo_project_status_code_group.parentGroupID FROM eo_project_status_code_group WHERE projectID = ? AND isChild = 1 AND parentGroupID = ? ORDER BY eo_project_status_code_group.groupID DESC;', array(
+                $childGroup = $db->prepareExecuteAll('SELECT eo_ams_project_status_code_group.groupID,eo_ams_project_status_code_group.groupName,eo_ams_project_status_code_group.parentGroupID FROM eo_ams_project_status_code_group WHERE projectID = ? AND isChild = 1 AND parentGroupID = ? ORDER BY eo_ams_project_status_code_group.groupID DESC;', array(
                     $projectID,
                     $parentGroup['groupID']
                 ));
 
                 if ($childGroup) {
                     foreach ($childGroup as &$group) {
-                        $secondChildGroup = $db->prepareExecuteAll('SELECT eo_project_status_code_group.groupID,eo_project_status_code_group.groupName,eo_project_status_code_group.parentGroupID FROM eo_project_status_code_group WHERE projectID = ? AND isChild = 2 AND parentGroupID = ? ORDER BY eo_project_status_code_group.groupID DESC;', array(
+                        $secondChildGroup = $db->prepareExecuteAll('SELECT eo_ams_project_status_code_group.groupID,eo_ams_project_status_code_group.groupName,eo_ams_project_status_code_group.parentGroupID FROM eo_ams_project_status_code_group WHERE projectID = ? AND isChild = 2 AND parentGroupID = ? ORDER BY eo_ams_project_status_code_group.groupID DESC;', array(
                             $projectID,
                             $group['groupID']
                         ));
@@ -138,7 +140,7 @@ class StatusCodeGroupDao
                     }
                 }
 
-                //判断是否有子分组
+            
                 if ($childGroup) {
                     $parentGroup['childGroupList'] = $childGroup;
                 } else {
@@ -148,7 +150,7 @@ class StatusCodeGroupDao
 
         $result = array();
         $result['groupList'] = $groupList;
-        $groupOrder = $db->prepareExecute('SELECT eo_api_status_code_group_order.orderList FROM eo_api_status_code_group_order WHERE projectID = ?;', array(
+        $groupOrder = $db->prepareExecute('SELECT eo_ams_api_status_code_group_order.orderList FROM eo_ams_api_status_code_group_order WHERE projectID = ?;', array(
             $projectID
         ));
         $result['groupOrder'] = $groupOrder['orderList'];
@@ -160,10 +162,10 @@ class StatusCodeGroupDao
     }
 
     /**
-     * 修改分组
-     * @param $groupID int 分组ID
-     * @param $groupName string 分组名
-     * @param $parentGroupID int 父分组ID
+     * edit group
+     * @param $groupID int gourpID
+     * @param $groupName string group name
+     * @param $parentGroupID int parent groupID
      * @param $isChild
      * @return bool
      */
@@ -172,12 +174,12 @@ class StatusCodeGroupDao
         $db = getDatabase();
 
         if (!$parentGroupID) {
-            $db->prepareExecute('UPDATE eo_project_status_code_group SET eo_project_status_code_group.groupName = ?,isChild = 0,parentGroupID = NULL WHERE eo_project_status_code_group.groupID = ?;', array(
+            $db->prepareExecute('UPDATE eo_ams_project_status_code_group SET eo_ams_project_status_code_group.groupName = ?,isChild = 0,parentGroupID = NULL WHERE eo_ams_project_status_code_group.groupID = ?;', array(
                 $groupName,
                 $groupID
             ));
         } else {
-            $db->prepareExecute('UPDATE eo_project_status_code_group SET eo_project_status_code_group.groupName = ?,isChild = ?,parentGroupID = ? WHERE eo_project_status_code_group.groupID = ?;', array(
+            $db->prepareExecute('UPDATE eo_ams_project_status_code_group SET eo_ams_project_status_code_group.groupName = ?,isChild = ?,parentGroupID = ? WHERE eo_ams_project_status_code_group.groupID = ?;', array(
                 $groupName,
                 $isChild,
                 $parentGroupID,
@@ -193,15 +195,15 @@ class StatusCodeGroupDao
     }
 
     /**
-     * 更新分组排序
-     * @param $projectID int 项目ID
-     * @param $orderList string 排序列表
+     * update sort group
+     * @param $projectID int projectID
+     * @param $orderList string sort order
      * @return bool
      */
     public function sortGroup(&$projectID, &$orderList)
     {
         $db = getDatabase();
-        $db->prepareExecute('REPLACE INTO eo_api_status_code_group_order(projectID, orderList) VALUES (?,?);', array(
+        $db->prepareExecute('REPLACE INTO eo_ams_api_status_code_group_order(projectID, orderList) VALUES (?,?);', array(
             $projectID,
             $orderList
         ));
@@ -212,14 +214,14 @@ class StatusCodeGroupDao
     }
 
     /**
-     * 获取分组名称
+     * get group name
      * @param $group_id
      * @return bool
      */
     public function getGroupName(&$group_id)
     {
         $db = getDatabase();
-        $result = $db->prepareExecute('SELECT eo_project_status_code_group.groupName FROM eo_project_status_code_group WHERE eo_project_status_code_group.groupID = ?;', array($group_id));
+        $result = $db->prepareExecute('SELECT eo_ams_project_status_code_group.groupName FROM eo_ams_project_status_code_group WHERE eo_ams_project_status_code_group.groupID = ?;', array($group_id));
         if (empty($result)) {
             return FALSE;
         } else {
@@ -228,7 +230,7 @@ class StatusCodeGroupDao
     }
 
     /**
-     * 获取分组数据
+     *get group data
      * @param $project_id
      * @param $group_id
      * @return array|bool
@@ -237,16 +239,16 @@ class StatusCodeGroupDao
     {
         $db = getDatabase();
         $result = array();
-        $group = $db->prepareExecute('SELECT eo_project_status_code_group.groupName,eo_project_status_code_group.isChild FROM eo_project_status_code_group WHERE eo_project_status_code_group.projectID = ? AND eo_project_status_code_group.groupID = ?;', array(
+        $group = $db->prepareExecute('SELECT eo_ams_project_status_code_group.groupName,eo_ams_project_status_code_group.isChild FROM eo_ams_project_status_code_group WHERE eo_ams_project_status_code_group.projectID = ? AND eo_ams_project_status_code_group.groupID = ?;', array(
             $project_id,
             $group_id
         ));
-        $result['statusCodeList'] = $db->prepareExecuteAll("SELECT eo_project_status_code.codeID,eo_project_status_code.code,eo_project_status_code.codeDescription FROM eo_project_status_code WHERE eo_project_status_code.groupID = ?", array(
+        $result['statusCodeList'] = $db->prepareExecuteAll("SELECT eo_ams_project_status_code.codeID,eo_ams_project_status_code.code,eo_ams_project_status_code.codeDescription FROM eo_ams_project_status_code WHERE eo_ams_project_status_code.groupID = ?", array(
             $group_id
         ));
         $result['groupName'] = $group['groupName'];
         if ($group['isChild'] <= 1) {
-            $child_group_list = $db->prepareExecuteAll('SELECT eo_project_status_code_group.groupID,eo_project_status_code_group.groupName FROM eo_project_status_code_group WHERE eo_project_status_code_group.parentGroupID = ? AND eo_project_status_code_group.projectID = ?', array(
+            $child_group_list = $db->prepareExecuteAll('SELECT eo_ams_project_status_code_group.groupID,eo_ams_project_status_code_group.groupName FROM eo_ams_project_status_code_group WHERE eo_ams_project_status_code_group.parentGroupID = ? AND eo_ams_project_status_code_group.projectID = ?', array(
                 $group_id,
                 $project_id
             ));
@@ -255,10 +257,10 @@ class StatusCodeGroupDao
                 foreach ($child_group_list as $group) {
                     $result['childGroupList'][$i]['groupID'] = $group['groupID'];
                     $result['childGroupList'][$i]['groupName'] = $group['groupName'];
-                    $result['childGroupList'][$i]['statusCodeList'] = $db->prepareExecuteAll("SELECT eo_project_status_code.codeID,eo_project_status_code.code,eo_project_status_code.codeDescription FROM eo_project_status_code WHERE eo_project_status_code.groupID = ?", array(
+                    $result['childGroupList'][$i]['statusCodeList'] = $db->prepareExecuteAll("SELECT eo_ams_project_status_code.codeID,eo_ams_project_status_code.code,eo_ams_project_status_code.codeDescription FROM eo_ams_project_status_code WHERE eo_ams_project_status_code.groupID = ?", array(
                         $group['groupID']
                     ));
-                    $group_list = $db->prepareExecuteAll('SELECT eo_project_status_code_group.groupID,eo_project_status_code_group.groupName FROM eo_project_status_code_group WHERE eo_project_status_code_group.parentGroupID = ? AND eo_project_status_code_group.projectID = ?', array(
+                    $group_list = $db->prepareExecuteAll('SELECT eo_ams_project_status_code_group.groupID,eo_ams_project_status_code_group.groupName FROM eo_ams_project_status_code_group WHERE eo_ams_project_status_code_group.parentGroupID = ? AND eo_ams_project_status_code_group.projectID = ?', array(
                         $group['groupID'],
                         $project_id
                     ));
@@ -267,7 +269,7 @@ class StatusCodeGroupDao
                         foreach ($group_list as $child_group) {
                             $result['childGroupList'][$i]['childGroupList'][$j]['groupID'] = $child_group['groupID'];
                             $result['childGroupList'][$i]['childGroupList'][$j]['groupName'] = $child_group['groupName'];
-                            $result['childGroupList'][$i]['childGroupList'][$j]['statusCodeList'] = $db->prepareExecuteAll("SELECT eo_project_status_code.codeID,eo_project_status_code.code,eo_project_status_code.codeDescription FROM eo_project_status_code WHERE eo_project_status_code.groupID = ?", array(
+                            $result['childGroupList'][$i]['childGroupList'][$j]['statusCodeList'] = $db->prepareExecuteAll("SELECT eo_ams_project_status_code.codeID,eo_ams_project_status_code.code,eo_ams_project_status_code.codeDescription FROM eo_ams_project_status_code WHERE eo_ams_project_status_code.groupID = ?", array(
                                 $child_group['groupID']
                             ));
                             $j++;
@@ -284,7 +286,7 @@ class StatusCodeGroupDao
     }
 
     /**
-     * 导入状态码分组
+     * import gourp
      * @param $project_id
      * @param $data
      * @return bool
@@ -294,8 +296,8 @@ class StatusCodeGroupDao
         $db = getDatabase();
         try {
             $db->beginTransaction();
-            // 插入分组
-            $db->prepareExecute('INSERT INTO eo_project_status_code_group (eo_project_status_code_group.projectID,eo_project_status_code_group.groupName) VALUES (?,?);', array(
+       
+            $db->prepareExecute('INSERT INTO eo_ams_project_status_code_group (eo_ams_project_status_code_group.projectID,eo_ams_project_status_code_group.groupName) VALUES (?,?);', array(
                 $project_id,
                 $data['groupName']
             ));
@@ -304,9 +306,9 @@ class StatusCodeGroupDao
                 throw new \PDOException("add statusCodeGroup error");
             $group_id = $db->getLastInsertID();
             if ($data['statusCodeList']) {
-                // 插入状态码
+                
                 foreach ($data['statusCodeList'] as $status_code) {
-                    $db->prepareExecute('INSERT INTO eo_project_status_code (eo_project_status_code.groupID,eo_project_status_code.code,eo_project_status_code.codeDescription) VALUES (?,?,?);', array(
+                    $db->prepareExecute('INSERT INTO eo_ams_project_status_code (eo_ams_project_status_code.groupID,eo_ams_project_status_code.code,eo_ams_project_status_code.codeDescription) VALUES (?,?,?);', array(
                         $group_id,
                         $status_code['code'],
                         $status_code['codeDescription']
@@ -319,8 +321,8 @@ class StatusCodeGroupDao
             if ($data['childGroupList']) {
                 $group_id_parent = $group_id;
                 foreach ($data['childGroupList'] as $child_group) {
-                    // 插入分组
-                    $db->prepareExecute('INSERT INTO eo_project_status_code_group (eo_project_status_code_group.projectID,eo_project_status_code_group.groupName,eo_project_status_code_group.parentGroupID,eo_project_status_code_group.isChild) VALUES (?,?,?,?);', array(
+                    
+                    $db->prepareExecute('INSERT INTO eo_ams_project_status_code_group (eo_ams_project_status_code_group.projectID,eo_ams_project_status_code_group.groupName,eo_ams_project_status_code_group.parentGroupID,eo_ams_project_status_code_group.isChild) VALUES (?,?,?,?);', array(
                         $project_id,
                         $child_group['groupName'],
                         $group_id_parent,
@@ -332,9 +334,9 @@ class StatusCodeGroupDao
 
                     $group_id = $db->getLastInsertID();
                     if ($child_group['statusCodeList']) {
-                        // 插入状态码
+                        
                         foreach ($child_group['statusCodeList'] as $status_code) {
-                            $db->prepareExecute('INSERT INTO eo_project_status_code (eo_project_status_code.groupID,eo_project_status_code.code,eo_project_status_code.codeDescription) VALUES (?,?,?);', array(
+                            $db->prepareExecute('INSERT INTO eo_ams_project_status_code (eo_ams_project_status_code.groupID,eo_ams_project_status_code.code,eo_ams_project_status_code.codeDescription) VALUES (?,?,?);', array(
                                 $group_id,
                                 $status_code['code'],
                                 $status_code['codeDescription']
@@ -349,8 +351,8 @@ class StatusCodeGroupDao
                     if ($child_group['childGroupList']) {
                         $parent_id = $group_id;
                         foreach ($child_group['childGroupList'] as $group) {
-                            // 插入分组
-                            $db->prepareExecute('INSERT INTO eo_project_status_code_group (eo_project_status_code_group.projectID,eo_project_status_code_group.groupName,eo_project_status_code_group.parentGroupID,eo_project_status_code_group.isChild) VALUES (?,?,?,?);', array(
+                            
+                            $db->prepareExecute('INSERT INTO eo_ams_project_status_code_group (eo_ams_project_status_code_group.projectID,eo_ams_project_status_code_group.groupName,eo_ams_project_status_code_group.parentGroupID,eo_ams_project_status_code_group.isChild) VALUES (?,?,?,?);', array(
                                 $project_id,
                                 $group['groupName'],
                                 $parent_id,
@@ -362,9 +364,9 @@ class StatusCodeGroupDao
 
                             $group_id = $db->getLastInsertID();
                             if ($group['statusCodeList']) {
-                                // 插入状态码
+                               
                                 foreach ($child_group['statusCodeList'] as $status_code) {
-                                    $db->prepareExecute('INSERT INTO eo_project_status_code (eo_project_status_code.groupID,eo_project_status_code.code,eo_project_status_code.codeDescription) VALUES (?,?,?);', array(
+                                    $db->prepareExecute('INSERT INTO eo_ams_project_status_code (eo_ams_project_status_code.groupID,eo_ams_project_status_code.code,eo_ams_project_status_code.codeDescription) VALUES (?,?,?);', array(
                                         $group_id,
                                         $status_code['code'],
                                         $status_code['codeDescription']

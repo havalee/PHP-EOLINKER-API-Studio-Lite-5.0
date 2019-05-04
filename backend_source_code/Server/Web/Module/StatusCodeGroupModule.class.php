@@ -1,17 +1,19 @@
 <?php
 /**
- * @name eolinker open source，eolinker开源版本
- * @link https://www.eolinker.com
- * @package eolinker
- * @author www.eolinker.com 广州银云信息科技有限公司 2015-2018
-
- * eolinker，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
- * 如在使用的过程中有任何问题，可通过http://help.eolinker.com寻求帮助
+ * @name EOLINKER ams open source，EOLINKER open source version
+ * @link https://global.eolinker.com/
+ * @package EOLINKER
+ * @author www.eolinker.com eoLinker Ltd.co 2015-2018
+ * 
+ * eoLinker is the world's leading and domestic largest online API interface management platform, providing functions such as automatic generation of API documents, API automated testing, Mock testing, team collaboration, etc., aiming to solve the problem of low development efficiency caused by separation of front and rear ends.
+ * If you have any problems during the process of use, please join the user discussion group for feedback, we will solve the problem for you with the fastest speed and best service attitude.
  *
- * 注意！eolinker开源版本遵循GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以eoLinker开源版本为基础而开发的二次版本”在互联网上流通。
- * 注意！一经发现，我们将立刻启用法律程序进行维权。
- * 再次感谢您的使用，希望我们能够共同维护国内的互联网开源文明和正常商业秩序。
+ * 
  *
+ * Website：https://global.eolinker.com/
+ * Slack：eolinker.slack.com
+ * facebook：@EoLinker
+ * twitter：@eoLinker
  */
 
 class StatusCodeGroupModule
@@ -22,8 +24,8 @@ class StatusCodeGroupModule
     }
 
     /**
-     * 获取项目用户类型
-     * @param $groupID int 分组ID
+     * Get User Type
+     * @param $groupID int GroupID
      * @return bool|int
      */
     public function getUserType(&$groupID)
@@ -42,10 +44,10 @@ class StatusCodeGroupModule
     }
 
     /**
-     * 添加状态码分组
-     * @param $projectID int 项目ID
-     * @param $groupName string 分组名
-     * @param $parentGroupID int 父分组ID
+     * Add group
+     * @param $projectID int ProjectID
+     * @param $groupName string Group name
+     * @param $parentGroupID int parent groupID
      * @param $isChild
      * @return bool|int
      */
@@ -58,9 +60,9 @@ class StatusCodeGroupModule
             if (is_null($parentGroupID)) {
                 $result = $statusCodeGroupDao->addGroup($projectID, $groupName);
                 if ($result) {
-                    //将操作写入日志
+                    
                     $log_dao = new ProjectLogDao();
-                    $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $result, ProjectLogDao::$OP_TYPE_ADD, "新增状态码分组:'$groupName'", date("Y-m-d H:i:s", time()));
+                    $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $result, ProjectLogDao::$OP_TYPE_ADD, "Add Status Code Group:'$groupName'", date("Y-m-d H:i:s", time()));
                     return $result;
                 } else {
                     return FALSE;
@@ -69,9 +71,9 @@ class StatusCodeGroupModule
                 $result = $statusCodeGroupDao->addChildGroup($projectID, $groupName, $parentGroupID, $isChild);
                 if ($result) {
                     $parent_group_name = $statusCodeGroupDao->getGroupName($parentGroupID);
-                    //将操作写入日志
+                   
                     $log_dao = new ProjectLogDao();
-                    $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $result, ProjectLogDao::$OP_TYPE_ADD, "新增状态码子分组:'$parent_group_name>>$groupName'", date("Y-m-d H:i:s", time()));
+                    $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $result, ProjectLogDao::$OP_TYPE_ADD, "Add Status Code Children Group:'$parent_group_name>>$groupName'", date("Y-m-d H:i:s", time()));
                     return $result;
                 } else {
                     return FALSE;
@@ -82,8 +84,8 @@ class StatusCodeGroupModule
     }
 
     /**
-     * 删除分组
-     * @param $groupID int 分组ID
+     * Delete Group
+     * @param $groupID int GroupID
      * @return bool
      */
     public function deleteGroup(&$groupID)
@@ -95,9 +97,9 @@ class StatusCodeGroupModule
             $result = $statusCodeGroupDao->deleteGroup($groupID);
             if ($result) {
                 $projectDao->updateProjectUpdateTime($projectID);
-                //将操作写入日志
+                
                 $log_dao = new ProjectLogDao();
-                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $groupID, ProjectLogDao::$OP_TYPE_DELETE, "删除状态码分组:'$group_name'", date("Y-m-d H:i:s", time()));
+                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $groupID, ProjectLogDao::$OP_TYPE_DELETE, "Delete Status Code Group:'$group_name'", date("Y-m-d H:i:s", time()));
                 return $result;
             } else {
                 return FALSE;
@@ -107,8 +109,8 @@ class StatusCodeGroupModule
     }
 
     /**
-     * 获取状态码分组列表
-     * @param $projectID int 项目ID
+     * Get GROUP lIST
+     * @param $projectID int ProjectID
      * @return bool|array
      */
     public function getGroupList(&$projectID)
@@ -122,10 +124,10 @@ class StatusCodeGroupModule
     }
 
     /**
-     * 修改状态码分组
-     * @param $groupID int 分组ID
-     * @param $groupName string 分组名
-     * @param $parentGroupID int 父分组ID
+     * Edit Group
+     * @param $groupID int
+     * @param $groupName string 
+     * @param $parentGroupID int 
      * @param $isChild
      * @return bool
      */
@@ -140,9 +142,9 @@ class StatusCodeGroupModule
             $projectDao->updateProjectUpdateTime($projectID);
             $result = $statusCodeGroupDao->editGroup($groupID, $groupName, $parentGroupID, $isChild);
             if ($result) {
-                //将操作写入日志
+                
                 $log_dao = new ProjectLogDao();
-                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $groupID, ProjectLogDao::$OP_TYPE_UPDATE, "修改状态码分组:'$groupName'", date("Y-m-d H:i:s", time()));
+                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $groupID, ProjectLogDao::$OP_TYPE_UPDATE, "Edit Status Code Group:'$groupName'", date("Y-m-d H:i:s", time()));
 
                 return $result;
             } else {
@@ -153,9 +155,9 @@ class StatusCodeGroupModule
     }
 
     /**
-     * 修改分组排序
-     * @param $projectID int 项目ID
-     * @param $orderList string 排序列表
+     * Edit Sort Order
+     * @param $projectID int 
+     * @param $orderList string
      * @return bool
      */
     public function sortGroup(&$projectID, &$orderList)
@@ -165,9 +167,8 @@ class StatusCodeGroupModule
         if ($projectDao->checkProjectPermission($projectID, $_SESSION['userID'])) {
             if ($groupDao->sortGroup($projectID, $orderList)) {
                 $projectDao->updateProjectUpdateTime($projectID);
-                //将操作写入日志
                 $log_dao = new ProjectLogDao();
-                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $projectID, ProjectLogDao::$OP_TYPE_UPDATE, "修改状态码分组排序", date("Y-m-d H:i:s", time()));
+                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $projectID, ProjectLogDao::$OP_TYPE_UPDATE, "Edit Status Code Sort Order", date("Y-m-d H:i:s", time()));
 
                 return TRUE;
             } else {
@@ -177,7 +178,7 @@ class StatusCodeGroupModule
     }
 
     /**
-     * 导出分组
+     * Export Group
      * @param $group_id
      * @return bool|string
      */
@@ -192,9 +193,9 @@ class StatusCodeGroupModule
             $fileName = 'eoLinker_status_code_group_export_' . $_SESSION['userName'] . '_' . time() . '.export';
             if (file_put_contents(realpath('./dump') . DIRECTORY_SEPARATOR . $fileName, json_encode($data))) {
                 $group_name = $group_dao->getGroupName($group_id);
-                //将操作写入日志
+               
                 $log_dao = new ProjectLogDao();
-                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $group_id, ProjectLogDao::$OP_TYPE_OTHERS, "导出状态码分组：$group_name", date("Y-m-d H:i:s", time()));
+                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $group_id, ProjectLogDao::$OP_TYPE_OTHERS, "Export Status Code Group：$group_name", date("Y-m-d H:i:s", time()));
                 return $fileName;
             }
         } else {
@@ -203,7 +204,7 @@ class StatusCodeGroupModule
     }
 
     /**
-     * 导入分组
+     * Import Group
      * @param $project_id
      * @param $data
      * @return bool
@@ -217,9 +218,9 @@ class StatusCodeGroupModule
         }
         $result = $group_dao->importGroup($project_id, $data);
         if ($result) {
-            //将操作写入日志
+            
             $log_dao = new ProjectLogDao();
-            $log_dao->addOperationLog($project_id, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $project_id, ProjectLogDao::$OP_TYPE_OTHERS, "导入状态码分组：{$data['groupName']}", date("Y-m-d H:i:s", time()));
+            $log_dao->addOperationLog($project_id, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE_GROUP, $project_id, ProjectLogDao::$OP_TYPE_OTHERS, "Import Status Code Group：{$data['groupName']}", date("Y-m-d H:i:s", time()));
             return $result;
         } else {
             return FALSE;

@@ -9,7 +9,7 @@
     }
   },
   "production": {
-    "serverUrl": "./server/index.php",
+    "serverUrl": "/eolinker_os/server/index.php",
     "isDebug":false,
     "assetUrl":"",
     "COOKIE_CONFIG":{

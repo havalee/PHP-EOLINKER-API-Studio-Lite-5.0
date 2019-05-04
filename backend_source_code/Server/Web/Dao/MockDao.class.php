@@ -22,7 +22,7 @@ class MockDao
     public function getSuccessResult(&$project_id, &$api_uri, &$request_type)
     {
         $db = getDatabase();
-        $result = $db->prepareExecute("SELECT eo_api.apiSuccessMock FROM eo_api WHERE eo_api.projectID = ? AND eo_api.apiURI = ? AND eo_api.apiRequestType = ? AND eo_api.removed = 0 ORDER BY eo_api.apiUpdateTime DESC;", array(
+        $result = $db->prepareExecute("SELECT eo_ams_api.apiSuccessMock FROM eo_ams_api WHERE eo_ams_api.projectID = ? AND eo_ams_api.apiURI = ? AND eo_ams_api.apiRequestType = ? AND eo_ams_api.removed = 0 ORDER BY eo_ams_api.apiUpdateTime DESC;", array(
             $project_id,
             $api_uri,
             $request_type
@@ -44,7 +44,7 @@ class MockDao
     public function getFailureResult(&$project_id, &$api_uri, &$request_type)
     {
         $db = getDatabase();
-        $result = $db->prepareExecute("SELECT eo_api.apiFailureMock FROM eo_api WHERE eo_api.projectID = ? AND eo_api.apiURI = ? AND eo_api.apiRequestType = ?  AND eo_api.removed = 0 ORDER BY eo_api.apiUpdateTime DESC;", array(
+        $result = $db->prepareExecute("SELECT eo_ams_api.apiFailureMock FROM eo_ams_api WHERE eo_ams_api.projectID = ? AND eo_ams_api.apiURI = ? AND eo_ams_api.apiRequestType = ?  AND eo_ams_api.removed = 0 ORDER BY eo_ams_api.apiUpdateTime DESC;", array(
             $project_id,
             $api_uri,
             $request_type
@@ -70,7 +70,7 @@ class MockDao
     public function getMockResult(&$project_id, &$api_uri, &$request_type)
     {
         $db = getDatabase();
-        $result = $db->prepareExecute('SELECT eo_api.mockResult FROM eo_api WHERE eo_api.projectID = ? AND eo_api.apiURI = ? AND eo_api.apiRequestType = ? AND eo_api.removed = 0 ORDER BY eo_api.apiUpdateTime DESC;', array(
+        $result = $db->prepareExecute('SELECT eo_ams_api.mockResult FROM eo_ams_api WHERE eo_ams_api.projectID = ? AND eo_ams_api.apiURI = ? AND eo_ams_api.apiRequestType = ? AND eo_ams_api.removed = 0 ORDER BY eo_ams_api.apiUpdateTime DESC;', array(
             $project_id,
             $api_uri,
             $request_type
@@ -93,7 +93,7 @@ class MockDao
     public function getRestfulMock(&$project_id, &$api_uri, &$request_type)
     {
         $db = getDatabase();
-        $result = $db->prepareExecuteAll('SELECT eo_api.apiURI,eo_api.apiID,eo_api.apiSuccessMock,eo_api.apiFailureMock,eo_api.mockResult FROM eo_api WHERE eo_api.projectID = ?  AND eo_api.removed = 0 AND eo_api.apiRequestType = ? ORDER BY eo_api.apiUpdateTime DESC;', array(
+        $result = $db->prepareExecuteAll('SELECT eo_ams_api.apiURI,eo_ams_api.apiID,eo_ams_api.apiSuccessMock,eo_ams_api.apiFailureMock,eo_ams_api.mockResult FROM eo_ams_api WHERE eo_ams_api.projectID = ?  AND eo_ams_api.removed = 0 AND eo_ams_api.apiRequestType = ? ORDER BY eo_ams_api.apiUpdateTime DESC;', array(
             $project_id,
             $request_type
         ));

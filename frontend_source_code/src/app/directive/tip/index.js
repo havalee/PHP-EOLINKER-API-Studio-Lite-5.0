@@ -1,56 +1,42 @@
-(function() {
+(function () {
     'use strict';
-    /**
-     * @Author   广州银云信息科技有限公司
-     * @function [提示指令js]
-     * @version  3.0.2
-     * @service  $filter [注入过滤器服务]
-     * @service  $timeout [注入$timeout服务]
+    /*
+     * author：广州银云信息科技有限公司
+     * 提示指令js
      */
     angular.module('eolinker.directive')
 
-    .directive('tipDirective', ['$filter', '$timeout', function($filter, $timeout) {
-        return {
-            restrict: 'AE',
-            transclude: true,
-            template: '<span class="iconfont icon-yiwen1" ></span>' +
-                '<div class="tips-message" style="margin-left: {{data.input.marginLeft}}px;margin-top:-{{data.element.clientHeight+5}}px"><ul><li class="message-li" id="tip-directive-js-{{data.info.uuid}}" ></li><li class="arrow-li"></li></ul></div>',
-            scope: {
-                input: '@'
-            },
-            link: function($scope, elem, attrs, ctrl) {
-                $scope.data = {
-                    input:{
-                        marginLeft:attrs.marginLeft||-5
-                    },
-                    info: {
+        .directive('tipDirective', ['$compile', '$filter', '$timeout', function ($compile, $filter, $timeout) {
+            return {
+                restrict: 'AE',
+                transclude: true,
+                template: '<span class="iconfont icon-yiwen1" ></span>' +
+                    '<div class="tips-message eo-tip-container" style="margin-left: {{data.input.marginLeft}}px;margin-top:-{{data.element.clientHeight+5}}px;"><div><div class="message-li" id="tip-directive-js-{{data.uuid}}" ></div><div class="arrow-li"></div></div>',
+                scope: {
+                    input: '@'
+                },
+                link: function ($scope, elem, attrs, ctrl) {
+                    $scope.data = {
+                        input: {
+                            marginLeft: attrs.marginLeft || -5
+                        },
                         uuid: $filter('uuidFilter')(),
-                        element: null
+                            element: null
                     }
-                }
-                var data = {
-                    info: {
+                    var data = {
                         timer: null
-                    },
-                    fun:{
-                        $destroy:null,
+                    },fun={};
+                    fun.$destroy = function () {
+                        if (data.timer) {
+                            $timeout.cancel(data.timer);
+                        }
                     }
+                    data.timer = $timeout(function () {
+                        $scope.data.element = document.getElementById('tip-directive-js-' + $scope.data.uuid);
+                        angular.element($scope.data.element).append($scope.input);
+                    })
+                    $scope.$on('$destroy', fun.$destroy);
                 }
-                
-                /**
-                 * @function [销毁功能函数]
-                 */
-                data.fun.$destroy = function() {
-                    if (data.info.timer) {
-                        $timeout.cancel(data.info.timer);
-                    }
-                }
-                data.info.timer = $timeout(function() {
-                    $scope.data.element = document.getElementById('tip-directive-js-' + $scope.data.info.uuid);
-                    angular.element($scope.data.element).append($scope.input);
-                })
-                $scope.$on('$destroy', data.fun.$destroy);
-            }
-        };
-    }]);
+            };
+        }]);
 })();

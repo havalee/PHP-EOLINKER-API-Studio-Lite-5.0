@@ -1,15 +1,15 @@
-(function() {
+(function () {
     'use strict';
     /**
-     * @name eolinker open source，eolinker开源版本
+     * @name EOLINKER AMS OPEN SOURCE，EOLINKER AMS开源版本
      * @link https://www.eolinker.com
-     * @package eolinker
+     * @package EOLINKER AMS
      * @author www.eolinker.com 广州银云信息科技有限公司 2015-2018
 
-     * eolinker，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
+     * EOLINKER，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
      * 如在使用的过程中有任何问题，可通过[图片]http://help.eolinker.com寻求帮助
      *
-     * 注意！eolinker开源版本遵循GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以eoLinker开源版本为基础而开发的二次版本”在互联网上流通。
+     *注意！EOLINKER AMS 开源版本遵循 GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以 EOLINKER AMS开源版本为基础而开发的二次版本”在互联网上流通。。
      * 注意！一经发现，我们将立刻启用法律程序进行维权。
      * 再次感谢您的使用，希望我们能够共同维护国内的互联网开源文明和正常商业秩序。
      *
@@ -18,9 +18,6 @@
      */
     angular
         .module('eolinker.constant')
-        .constant('ERROR_WARNING', {
-            COMMON: '请稍候再试或提交工单反馈'
-        })
         .constant('CODE', {
             COMMON: {
                 SUCCESS: '000000', //请求成功 Request success
@@ -44,7 +41,7 @@
                 ERROR: '210000', //操作失败/列表为空等 The operation failed / list is null   
                 ILLEGAL_URI: '210001', //URI地址格式非法 URI address format illegal   
                 ILLEGAL_REQUEST_TYPE: '210002', //请求参数的类型非法 The type of request parameter is illegal   
-                ERROR_ADD_HISTORY: '210003', //添加测试记录失败 Failed to add test record 
+                ERROR_ADD_HISTORY: '210003', //新建测试记录失败 Failed to add test record 
                 ILLEGAL_HISTORY_ID: '210004', //测试记录ID格式非法 Test record ID format illegal
             },
             API_GROUP: {
@@ -57,7 +54,7 @@
                 ERROR: '250000', //操作失败/列表为空等 The operation failed / list is null
                 ILLEGAL_USERCALL: '250001', //目标邀请人员的信息填写有误，不为（手机号、邮箱、用户名）之一 The information of the target inviting personnel is incorrect, which is not one of the mobile phone number, e-mail address and user name
                 EXIST: '250002', //该用户已经被邀请过 The user has been invited    
-                ILLEGAL_ID: '250003', //协作成员的关联ID（connID）格式非法 The associated member ID (connID) format is illegal
+                ILLEGAL_ID: '250003', //协作成员的关联ID（userID）格式非法 The associated member ID (userID) format is illegal
                 ILLEGAL_NICKNAME: '250004', //协作成员的昵称格式非法 The nickname format of the collaboration member is illegal  
                 ILLEGAL_TYPE: '250005' //设置的协作成员类型有误 The set of collaboration member types is incorrect  
             },
@@ -121,6 +118,24 @@
                 ILLEGAL_VERSION: '310002', //导入postman数据缺少版本号[1/2]或者版本号不正确 Importing postman data lacks version number [1/2] or version number incorrect
                 ILLEGAL_IMPORT: '310003' //导入的RAP数据为空或者数据格式有误 The imported RAP data is null or data format error
             },
+
             EMPTY: '150008'
         })
+        .factory('RESPONSE_TEXT', RESPONSE_TEXT)
+        .factory('ENSURE_WARNIMG', ENSURE_WARNIMG)
+    RESPONSE_TEXT.$inject = ['$filter'];
+    ENSURE_WARNIMG.$inject = ['$filter']
+
+
+    function RESPONSE_TEXT($filter) {
+        return {
+            FAILURE: $filter('translate')('299')
+        }
+    }
+
+    function ENSURE_WARNIMG($filter) {
+        return {
+            DELETE: $filter('translate')('300')
+        }
+    }
 })();

@@ -21,12 +21,6 @@ gulp.task('watch', ['inject', 'vendor'], function () {
             gulp.start('inject');
         }
     });
-    //监控插件SCSS文件
-    gulp.watch([path.join(config.paths.src,'/plug/**/*.scss')], function (event) {
-        if (event.type === 'changed') {
-            gulp.start('plug:compass');
-        } 
-    });
     //监控JS文件
     gulp.watch([path.join(config.paths.src, '/app/**/*.js')], function (event) {
         if (event.type === 'changed') {
@@ -66,11 +60,9 @@ function browserSyncInit(baseDir, open, port) {
             routes: {
                 "/bower_components": "bower_components"
             },
-
             //使用代理
-            
             middleware: [
-                proxyMiddleware(['/eolinker_os'], {onProxyRes: onProxyRes, target: 'http://127.0.0.1', changeOrigin: true,secure: false})
+                proxyMiddleware(['/eolinker_os'], {onProxyRes: onProxyRes, target: 'http://localhost:8080/', changeOrigin: true,secure: false})
             ]
         }
     });

@@ -1,44 +1,44 @@
 <?php
 /**
- * @name eolinker open source，eolinker开源版本
- * @link https://www.eolinker.com
- * @package eolinker
- * @author www.eolinker.com 广州银云信息科技有限公司 2015-2018
-
- * eolinker，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
- * 如在使用的过程中有任何问题，可通过http://help.eolinker.com寻求帮助
+ * @name EOLINKER ams open source，EOLINKER open source version
+ * @link https://global.eolinker.com/
+ * @package EOLINKER
+ * @author www.eolinker.com eoLinker Ltd.co 2015-2018
+ * 
+ * eoLinker is the world's leading and domestic largest online API interface management platform, providing functions such as automatic generation of API documents, API automated testing, Mock testing, team collaboration, etc., aiming to solve the problem of low development efficiency caused by separation of front and rear ends.
+ * If you have any problems during the process of use, please join the user discussion group for feedback, we will solve the problem for you with the fastest speed and best service attitude.
  *
- * 注意！eolinker开源版本遵循GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以eoLinker开源版本为基础而开发的二次版本”在互联网上流通。
- * 注意！一经发现，我们将立刻启用法律程序进行维权。
- * 再次感谢您的使用，希望我们能够共同维护国内的互联网开源文明和正常商业秩序。
+ * 
  *
+ * Website：https://global.eolinker.com/
+ * Slack：eolinker.slack.com
+ * facebook：@EoLinker
+ * twitter：@eoLinker
  */
 
 class InstallModule
 {
     /**
-     * 检测环境
-     * @param $dbURL string 数据库主机地址
-     * @param $dbName string 数据库名
-     * @param $dbUser string 数据库用户名
-     * @param $dbPassword string 数据库密码
+     * Check Env
+     * @param $dbURL string 
+     * @param $dbName string 
+     * @param $dbUser string 
+     * @param $dbPassword string 
      * @return array
      */
     public function checkoutEnv(&$dbURL, &$dbName, &$dbUser, &$dbPassword)
     {
         $result = array('fileWrite' => 0, 'db' => 0, 'curl' => 0, 'mbString' => 0, 'sessionPath' => 0, 'isInstalled' => 0);
-        //检测配置目录写入权限
         try {
             if (file_put_contents(PATH_FW . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'fileWriteTest.txt', 'ok')) {
                 $result['fileWrite'] = 1;
                 unlink(PATH_FW . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'fileWriteTest.txt');
 
-                //检测导出目录写入权限
+
                 if (file_put_contents('./dump' . DIRECTORY_SEPARATOR . 'fileWriteTest.txt', 'ok')) {
                     $result['fileWrite'] = 1;
                     unlink('./dump' . DIRECTORY_SEPARATOR . 'fileWriteTest.txt');
 
-                    //检测根目录写入权限
                     if (file_put_contents('../fileWriteTest.txt', 'ok')) {
                         $result['fileWrite'] = 1;
                         unlink('../fileWriteTest.txt');
@@ -52,7 +52,6 @@ class InstallModule
             $result['fileWrite'] = '0';
             $result['fileWriteError'] = strval($e->getMessage());
         }
-        //检测数据库连接
         try {
             $dbURL = explode(':', $dbURL);
             if (empty($dbURL[1]))
@@ -64,7 +63,6 @@ class InstallModule
                 $conInfo = 'mysql:host=' . $dbURL[0] . ';port=' . $dbURL[1] . ';dbname=' . $dbName . ';charset=utf8';
                 if ($con = new \PDO($conInfo, $dbUser, $dbPassword)) {
                     $result['db'] = 1;
-                    //检测数据库是否有内容(已经安装过)
                     $stat = $con->query("SELECT * FROM eo_user;");
                     if ($stat) {
                         $table_name = $stat->fetch(\PDO::FETCH_ASSOC);
@@ -84,7 +82,6 @@ class InstallModule
             $result['db'] = 0;
             $result['dbError'] = strval($e->getMessage());
         }
-        //检测CURL
         try {
             if (!function_exists('curl_init')) {
                 $result['curl'] = 0;
@@ -100,7 +97,6 @@ class InstallModule
             $result['curl'] = 0;
             $result['curlError'] = strval($e->getMessage());
         }
-        //检测mbString
         try {
             if (!function_exists('mb_strlen')) {
                 $result['mbString'] = 0;
@@ -116,7 +112,6 @@ class InstallModule
             $result['mbString'] = 0;
             $result['mbStringError'] = strval($e->getMessage());
         }
-        //检测session路径写入权限
         try {
             if (session_save_path() == '') {
                 $session_path = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'C:/Windows/Temp' : '/tmp';
@@ -137,19 +132,19 @@ class InstallModule
     }
 
     /**
-     * 写入配置文件
-     * @param $dbURL string 数据库主机地址
-     * @param $dbName string 数据库名
-     * @param $dbUser string 数据库用户名
-     * @param $dbPassword string 数据库密码
-     * @param $websiteName string 网站名称
-     * @param $language string 语言
+     * Create Config File
+     * @param $dbURL string 
+     * @param $dbName string 
+     * @param $dbUser string 
+     * @param $dbPassword string 
+     * @param $websiteName string 
+     * @param $language string 
      * @return bool
      */
     public function createConfigFile(&$dbURL, &$dbName, &$dbUser, &$dbPassword, &$websiteName, &$language)
     {
         if (file_exists(PATH_FW . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'eo_config.php')) {
-            //不存在配置文件，需要跳转至引导页面进行安装
+           
             unlink(realpath(PATH_FW . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'eo_config.php'));
         }
 
@@ -157,37 +152,37 @@ class InstallModule
         if (empty($dbURL[1]))
             $dbURL[1] = '3306';
 
-        $websiteName = isset($websiteName) ? $websiteName : 'eolinker开源版';
+        $websiteName = isset($websiteName) ? $websiteName : 'eolinker Open Source Version';
 
         $config = "<?php
-//主机地址
+//Host Address
 defined('DB_URL') or define('DB_URL', '{$dbURL[0]}');
 
-//主机端口,默认mysql为3306
+//Host Port, Default mysql is 3306
 defined('DB_PORT') or define('DB_PORT', '{$dbURL[1]}');
 
-//连接数据库的用户名
+//Database Username
 defined('DB_USER') or define('DB_USER', '{$dbUser}');
 
-//连接数据库的密码，推荐使用随机生成的字符串
+//Database Password
 defined('DB_PASSWORD') or define('DB_PASSWORD', '{$dbPassword}');
 
-//数据库名
+//Database Name
 defined('DB_NAME') or define('DB_NAME', '{$dbName}');
 
-//是否允许新用户注册
+//Allow Register
 defined('ALLOW_REGISTER') or define('ALLOW_REGISTER', TRUE);
 
-//是否允许更新项目，如果设置为FALSE，那么自动更新和手动更新都将失效
+//Allow Update 
 defined('ALLOW_UPDATE') or define('ALLOW_UPDATE', TRUE);
 
-//网站名称
+//Web Site Name
 defined('WEBSITE_NAME') or define('WEBSITE_NAME', '{$websiteName}');
 
-//数据表前缀
+// Database Table header
 defined('DB_TABLE_PREFIXION') or define('DB_TABLE_PREFIXION', 'eo');
 
-//语言
+//Language
 defined('LANGUAGE') or define ('LANGUAGE', '{$language}');
 ?>";
         if ($configFile = file_put_contents(PATH_FW . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'eo_config.php', $config))
@@ -197,12 +192,12 @@ defined('LANGUAGE') or define ('LANGUAGE', '{$language}');
     }
 
     /**
-     * 安装数据库
+     * Install Database
      */
     public
     function installDatabase()
     {
-        //读取数据库文件
+       
         $sql = file_get_contents(PATH_FW . DIRECTORY_SEPARATOR . 'db/eolinker_os_mysql.sql');
         $sqlArray = array_filter(explode(';', $sql));
         $dao = new InstallDao;

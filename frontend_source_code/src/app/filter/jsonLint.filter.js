@@ -1,15 +1,15 @@
 (function() {
     'use strict';
     /**
-     * @name eolinker open source，eolinker开源版本
+     * @name EOLINKER AMS OPEN SOURCE，EOLINKER AMS开源版本
      * @link https://www.eolinker.com
-     * @package eolinker
+     * @package EOLINKER AMS
      * @author www.eolinker.com 广州银云信息科技有限公司 2015-2018
 
-     * eolinker，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
+     * EOLINKER，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
      * 如在使用的过程中有任何问题，可通过[图片]http://help.eolinker.com寻求帮助
      *
-     * 注意！eolinker开源版本遵循GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以eoLinker开源版本为基础而开发的二次版本”在互联网上流通。
+     *注意！EOLINKER AMS 开源版本遵循 GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以 EOLINKER AMS开源版本为基础而开发的二次版本”在互联网上流通。。
      * 注意！一经发现，我们将立刻启用法律程序进行维权。
      * 再次感谢您的使用，希望我们能够共同维护国内的互联网开源文明和正常商业秩序。
      *
@@ -358,7 +358,7 @@
                                                     A = [];
                                                     for (x in g[s]) this.terminals_[x] && x > 2 && A.push("'" + this.terminals_[x] + "'");
                                                     var B = "";
-                                                    this.lexer.showPosition ? B = "在第" + (i + 1) + "行发生解析错误 " + ":<br/>" + this.lexer.showPosition() + "<br/>此处缺少" + A.join(", ") + "字符, 实际上确是一个 '" + this.terminals_[q] + "'" : B = "在第" + (i + 1) + "行发生解析错误 " + ": 本应该是 " + (q == 1 ? "结尾输入" : "'" + (this.terminals_[q] || q) + "'"), this.parseError(B, {
+                                                    this.lexer.showPosition ? B = $filter('translate')('307') + (i + 1) + '{{\'308\'|translate}} ' + ":<br/>" + this.lexer.showPosition() + "<br/>"+$filter('translate')('316') + A.join(", ") + '{{\'317\'|translate}} \'' + this.terminals_[q] + "'" : B = $filter('translate')('307') + (i + 1) + '{{\'308\'|translate}} ' + ':'+' {{\'318\'|translate}} ' + (q == 1 ? $filter('translate')('319') : "'" + (this.terminals_[q] || q) + "'"), this.parseError(B, {
                                                         text: this.lexer.match,
                                                         token: this.terminals_[q] || q,
                                                         line: this.lexer.yylineno,
@@ -367,17 +367,17 @@
                                                     })
                                                 }
                                                 if (k == 3) {
-                                                    if (q == m) throw new Error(B || "解析意外终止.");
+                                                    if (q == m) throw new Error(B || $filter('translate')('320'));
                                                     j = this.lexer.yyleng, h = this.lexer.yytext, i = this.lexer.yylineno, n = this.lexer.yylloc, q = p()
                                                 }
                                                 for (;;) {
                                                     if (l.toString() in g[s]) break;
-                                                    if (s == 0) throw new Error(B || "解析意外终止.");
+                                                    if (s == 0) throw new Error(B || $filter('translate')('320'));
                                                     o(1), s = d[d.length - 1]
                                                 }
                                                 r = q, q = l, s = d[d.length - 1], t = g[s] && g[s][l], k = 3
                                             }
-                                            if (t[0] instanceof Array && t.length > 1) throw new Error("解析错误: multiple actions possible at state: " + s + ", token: " + q);
+                                            if (t[0] instanceof Array && t.length > 1) throw new Error('{{\'321\'|translate}} ' + s + ", token: " + q);
                                             switch (t[0]) {
                                                 case 1:
                                                     d.push(q), e.push(this.lexer.yytext), f.push(this.lexer.yylloc), d.push(t[1]), q = null, r ? (q = r, r = null) : (j = this.lexer.yyleng, h = this.lexer.yytext, i = this.lexer.yylineno, n = this.lexer.yylloc, k > 0 && k--);
@@ -466,7 +466,7 @@
                                                 return
                                             }
                                             if (this._input === "") return this.EOF;
-                                            this.parseError("词汇错误发生在第" + (this.yylineno + 1) + "行. 不能识别的字符.<br/>" + this.showPosition(), {
+                                            this.parseError($filter('translate')('322') + (this.yylineno + 1) + '{{\'323\'|translate}}<br/>' + this.showPosition(), {
                                                 text: "",
                                                 token: null,
                                                 line: this.yylineno

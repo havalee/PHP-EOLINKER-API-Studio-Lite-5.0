@@ -3995,8 +3995,8 @@ var optionsProvider = {
 };
 
 function warn(message) {
-    if (typeof console != "undefined" && console.warn)
-        console.warn.apply(console, arguments);
+    // if (typeof console != "undefined" && console.warn)
+    //     console.warn.apply(console, arguments);
 }
 
 function reportError(msg, data) {
@@ -16311,7 +16311,7 @@ var EventEmitter = require("./lib/event_emitter").EventEmitter;
 var editorCss = ".ace_editor {\
 position: relative;\
 overflow: hidden;\
-font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;\
+font: 14px/20px 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;\
 direction: ltr;\
 text-align: left;\
 -webkit-tap-highlight-color: rgba(0, 0, 0, 0);\

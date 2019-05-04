@@ -1,17 +1,19 @@
 <?php
 /**
- * @name eolinker open source，eolinker开源版本
- * @link https://www.eolinker.com
- * @package eolinker
- * @author www.eolinker.com 广州银云信息科技有限公司 2015-2018
-
- * eolinker，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
- * 如在使用的过程中有任何问题，可通过http://help.eolinker.com寻求帮助
+ * @name EOLINKER ams open source，EOLINKER open source version
+ * @link https://global.eolinker.com/
+ * @package EOLINKER
+ * @author www.eolinker.com eoLinker Ltd.co 2015-2018
+ * 
+ * eoLinker is the world's leading and domestic largest online API interface management platform, providing functions such as automatic generation of API documents, API automated testing, Mock testing, team collaboration, etc., aiming to solve the problem of low development efficiency caused by separation of front and rear ends.
+ * If you have any problems during the process of use, please join the user discussion group for feedback, we will solve the problem for you with the fastest speed and best service attitude.
  *
- * 注意！eolinker开源版本遵循GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以eoLinker开源版本为基础而开发的二次版本”在互联网上流通。
- * 注意！一经发现，我们将立刻启用法律程序进行维权。
- * 再次感谢您的使用，希望我们能够共同维护国内的互联网开源文明和正常商业秩序。
+ * 
  *
+ * Website：https://global.eolinker.com/
+ * Slack：eolinker.slack.com
+ * facebook：@EoLinker
+ * twitter：@eoLinker
  */
 
 class PartnerModule
@@ -22,8 +24,8 @@ class PartnerModule
     }
 
     /**
-     * 获取项目用户类型
-     * @param $projectID int 项目ID
+     * Get USER TYPE
+     * @param $projectID int ProjectID
      * @return bool|int
      */
     public function getUserType(&$projectID)
@@ -35,11 +37,30 @@ class PartnerModule
         }
         return $result;
     }
-
     /**
-     * 邀请协作人员
-     * @param $projectID int 项目ID
-     * @param $inviteUserID int 邀请人ID
+     * 获取项目成员列表
+     *
+     *
+     */
+    public function getMemberList(&$projectID)
+    {
+    	$partnerDao = new PartnerDao;
+    	return $partnerDao->getMemberListFromDB($projectID );
+    }
+    /**
+     * 获取未分配项目成员列表
+     *
+     *
+     */
+    public function getNotMemberList(&$projectID)
+    {
+    	$partnerDao = new PartnerDao;
+    	return $partnerDao->getNotMemberListFromDB($projectID );
+    }
+    /**
+     * Invite developer
+     * @param $projectID int ProjectID
+     * @param $inviteUserID int InviterID
      * @return bool|int
      */
     public function invitePartner(&$projectID, &$inviteUserID)
@@ -47,18 +68,18 @@ class PartnerModule
         $projectDao = new ProjectDao;
         if ($projectDao->checkProjectPermission($projectID, $_SESSION['userID'])) {
             $projectInfo = $projectDao->getProjectName($projectID);
-            $summary = '您已被邀请加入项目：' . $projectInfo['projectName'] . '，开始您的高效协作之旅吧！';
-            $msg = '<p>您好！亲爱的用户：</p><p>您已经被加入项目：<b style="color:#4caf50">' . $projectInfo['projectName'] . '</b>，现在你可以参与项目的开发协作工作。</p><p>如果您在使用的过程中遇到任何问题，欢迎前往<a href="http://blog.eolinker.com/#/bbs/"><b style="color:#4caf50">交流社区</b></a>反馈意见，谢谢！。</p>';
+            $summary = 'You have been Invited to：' . $projectInfo['projectName'] . '，Enjoy your teamwork!';
+            $msg = '<p>Hello!Dear user：</p><p>You have been invited to：<b style="color:#4caf50">' . $projectInfo['projectName'] . '</b>，Now you could take part in developing work.</p><p>If you have any question please go to our slack and share with us<a href="http://eolinker.slack.com"><b style="color:#4caf50"></b></a>Thank You.</p>';
 
-            //邀请协作人员
+            
             $partnerDao = new PartnerDao;
             if ($connID = $partnerDao->invitePartner($projectID, $inviteUserID, $_SESSION['userID'])) {
                 $inviteUserCall = $partnerDao->getPartnerUserCall($inviteUserID);
-                //将操作写入日志
+             
                 $log_dao = new ProjectLogDao();
-                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_PARTNER, $inviteUserID, ProjectLogDao::$OP_TYPE_ADD, "邀请新成员:'$inviteUserCall'", date("Y-m-d H:i:s", time()));
+                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_PARTNER, $inviteUserID, ProjectLogDao::$OP_TYPE_ADD, "Invite New Member:'$inviteUserCall'", date("Y-m-d H:i:s", time()));
 
-                //给协作人员发送邀请信息
+           
                 $msgDao = new MessageDao;
                 $msgDao->sendMessage($_SESSION['userID'], $inviteUserID, 1, $summary, $msg);
                 return $connID;
@@ -69,9 +90,9 @@ class PartnerModule
     }
 
     /**
-     * 移除协作人员
-     * @param $projectID int 项目ID
-     * @param $connID int 用户与项目联系ID
+     * Delete developer
+     * @param $projectID int project ID
+     * @param $connID int connID
      * @return bool
      */
     public function removePartner($projectID, $connID)
@@ -79,18 +100,14 @@ class PartnerModule
         $projectDao = new ProjectDao;
         if ($projectDao->checkProjectPermission($projectID, $_SESSION['userID'])) {
             $projectInfo = $projectDao->getProjectName($projectID);
-            $summary = '您已被移除出项目：' . $projectInfo['projectName'];
-            $msg = '<p>您好！亲爱的用户：</p><p>您已经被移除出项目：<b style="color:#4caf50">' . $projectInfo['projectName'] . '</b>。</p><p>如果您在使用的过程中遇到任何问题，欢迎前往<a href="http://blog.eolinker.com/#/bbs/"><b style="color:#4caf50">交流社区</b></a>反馈意见，谢谢！。</p>';
+            $summary = 'You have been removed from：' . $projectInfo['projectName'];
+            $msg = '<p>Hello!Dear user：</p><p>You have been removed from project：<b style="color:#4caf50">' . $projectInfo['projectName'] . '</b>.</p><p>If you have any question please go to our slack and share with us<a href="http://eolinker.slack.com"><b style="color:#4caf50"></b></a>Thank You.</p>';
 
             $partnerDao = new PartnerDao;
-            $remotePartnerID = $partnerDao->getUserID($connID);
             if ($partnerDao->removePartner($projectID, $connID)) {
                 $inviteUserCall = $partnerDao->getPartnerUserCall($remotePartnerID);
-                //将操作写入日志
                 $log_dao = new ProjectLogDao();
-                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_PARTNER, $remotePartnerID, ProjectLogDao::$OP_TYPE_DELETE, "移除成员:'$inviteUserCall'", date("Y-m-d H:i:s", time()));
-
-                //给协作人员发送邀请信息
+                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_PARTNER, $remotePartnerID, ProjectLogDao::$OP_TYPE_DELETE, "Remove Member:'$inviteUserCall'", date("Y-m-d H:i:s", time()));
                 $msgDao = new MessageDao;
                 $msgDao->sendMessage(0, $remotePartnerID, 1, $summary, $msg);
                 return TRUE;
@@ -100,10 +117,40 @@ class PartnerModule
             return FALSE;
 
     }
-
+    
+    
+    public function addMember(&$projectID, &$conn_ids)
+    {
+        $projectDao = new PartnerDao;
+    	$user_ids = array();	
+    	foreach ($conn_ids as $user)
+    	{	
+    		if(! $projectDao->checkIsProjectMember ( $projectID, $user ))
+    			$user_ids [] = $user;
+    	}
+    	if($user_ids)
+    	{
+    		$result = $projectDao->addMember ($projectID, $user_ids);
+    		
+    		if($result)
+    		{
+    			$log_dao = new ProjectLogDao();
+    			$log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_PARTNER, $remotePartnerID, ProjectLogDao::$OP_TYPE_DELETE, "Add Member:'$user'", date("Y-m-d H:i:s", time()));
+    			$msgDao = new MessageDao;
+    			$msgDao->sendMessage(0, $remotePartnerID, 1, $summary, $msg);
+    			return TRUE;
+    		}
+    		else
+    		{
+    			return FALSE;
+    		}
+    	}
+    	else
+    		return FALSE;
+    }
     /**
-     * 获取协作人员列表
-     * @param $projectID int 项目ID
+     * Get Developer List
+     * @param $projectID int ProjectID
      * @return bool|array
      */
     public function getPartnerList(&$projectID)
@@ -117,7 +164,6 @@ class PartnerModule
                     $param['isNow'] = 1;
                 else
                     $param['isNow'] = 0;
-                unset($param['userID']);
             }
             return $list;
         } else
@@ -125,8 +171,8 @@ class PartnerModule
     }
 
     /**
-     * 退出协作项目
-     * @param $projectID int 项目ID
+     * Quit project
+     * @param $projectID int ProjectID
      * @return bool
      */
     public function quitPartner(&$projectID)
@@ -136,9 +182,8 @@ class PartnerModule
             $partnerDao = new PartnerDao;
             if ($partnerDao->quitPartner($projectID, $_SESSION['userID'])) {
                 $user_call = $partnerDao->getPartnerUserCall($_SESSION['userID']);
-                //将操作写入日志
                 $log_dao = new ProjectLogDao();
-                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_PARTNER, $_SESSION['userID'], ProjectLogDao::$OP_TYPE_OTHERS, "'$user_call'退出项目协作", date("Y-m-d H:i:s", time()));
+                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_PARTNER, $_SESSION['userID'], ProjectLogDao::$OP_TYPE_OTHERS, "'$user_call'Quit Project", date("Y-m-d H:i:s", time()));
 
                 return TRUE;
             } else
@@ -148,9 +193,9 @@ class PartnerModule
     }
 
     /**
-     * 查询是否已经加入过项目
-     * @param $projectID int 项目ID
-     * @param $userName string 用户名
+     * Check is invited
+     * @param $projectID int ProjectID
+     * @param $userName string Username
      * @return bool
      */
     public function checkIsInvited(&$projectID, &$userName)
@@ -160,10 +205,10 @@ class PartnerModule
     }
 
     /**
-     * 修改协作成员的昵称
-     * @param $project_id int 项目ID
-     * @param $conn_id int 连接ID
-     * @param $nick_name string 昵称
+     * Edit developer nickname
+     * @param $project_id int ProjectID
+     * @param $conn_id int connID
+     * @param $nick_name string nickname
      * @return bool
      */
     public function editPartnerNickName(&$project_id, &$conn_id, &$nick_name)
@@ -173,10 +218,10 @@ class PartnerModule
     }
 
     /**
-     * 修改协作成员的类型
-     * @param $project_id int 项目ID
-     * @param $conn_id int 连接ID
-     * @param $user_type int 用户类型
+     * Edit developer Type
+     * @param $project_id int ProjectID
+     * @param $conn_id int connID
+     * @param $user_type int UserType
      * @return bool
      */
     public function editPartnerType(&$project_id, &$conn_id, &$user_type)
@@ -188,20 +233,20 @@ class PartnerModule
             $invite_user_call = $dao->getPartnerUserCall($remote_partner_id);
             switch ($user_type) {
                 case 1:
-                    $type = '管理员';
+                    $type = 'Admin';
                     break;
                 case 2:
-                    $type = '普通成员（读写）';
+                    $type = 'Member ( Read&Write )';
                     break;
                 case 3:
-                    $type = '普通成员（只读）';
+                    $type = 'Member ( Read )';
                     break;
                 default:
                     break;
             }
-            //将操作写入日志
+
             $log_dao = new ProjectLogDao();
-            $log_dao->addOperationLog($project_id, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_PARTNER, $remote_partner_id, ProjectLogDao::$OP_TYPE_DELETE, "修改成员:'$invite_user_call'为'$type'", date("Y-m-d H:i:s", time()));
+            $log_dao->addOperationLog($project_id, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_PARTNER, $remote_partner_id, ProjectLogDao::$OP_TYPE_DELETE, "Edit Member:'$invite_user_call'To'$type'", date("Y-m-d H:i:s", time()));
             return $result;
         } else {
             return FALSE;

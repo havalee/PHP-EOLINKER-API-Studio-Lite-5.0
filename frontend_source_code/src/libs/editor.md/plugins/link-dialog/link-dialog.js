@@ -43,10 +43,10 @@
             {
                 var dialogHTML = "<div class=\"" + classPrefix + "form\">" + 
                                         "<label>" + linkLang.url + "</label>" + 
-                                        "<input type=\"text\" value=\"http://\" data-url />" +
+                                        "<input autocomplete=\"off\" type=\"text\" value=\"http://\" data-url />" +
                                         "<br/>" + 
                                         "<label>" + linkLang.urlTitle + "</label>" + 
-                                        "<input type=\"text\" value=\"" + selection + "\" data-title />" + 
+                                        "<input autocomplete=\"off\" type=\"text\" value=\"" + selection + "\" data-title />" + 
                                         "<br/>" +
                                     "</div>";
 
@@ -110,19 +110,19 @@
     { 
         module.exports = factory;
     }
-    // else if (typeof define === "function")  // AMD/CMD/Sea.js
-    // {
+	// else if (typeof define === "function")  // AMD/CMD/Sea.js
+ //    {
 	// 	if (define.amd) { // for Require.js
 
 	// 		define(["editormd"], function(editormd) {
-    //             factory(editormd);
-    //         });
+ //                factory(editormd);
+ //            });
 
 	// 	} else { // for Sea.js
 	// 		define(function(require) {
-    //             var editormd = require("./../../editormd");
-    //             factory(editormd);
-    //         });
+ //                var editormd = require("./../../editormd");
+ //                factory(editormd);
+ //            });
 	// 	}
 	// } 
 	else

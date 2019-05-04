@@ -74,7 +74,7 @@ gulp.task('inject_sass',function () {
     endtag: '// endinjector',
     addRootSlash: false
   };
-  return gulp.src(path.join(config.paths.src,'app/index.scss'))
+  return gulp.src(path.join(config.paths.src,'app/import.scss'))
           .pipe($.inject(injectFiles,injectOptions))
           .pipe(gulp.dest(path.join(config.paths.src,'app/')))
 });
@@ -89,9 +89,12 @@ gulp.task('clean', function () {
  */
 
 gulp.task('styles:compass',['inject_sass'],function () {
-  return gulp.src(path.join(config.paths.src,'app/index.scss'))
+  return gulp.src(path.join(config.paths.src,'app/import.scss'))
     .pipe($.plumber(config.errorHandler()))
-    .pipe($.sass())
+    .pipe($.compass({
+        css: path.join(config.paths.tmp, '/serve/app/'),
+        sass: path.join(config.paths.src, '/app/'),
+    }))
     //sprite图片路径修复
     .pipe($.replace('../../../src/assets/images/', '../assets/images/'))
     .pipe(gulp.dest(path.join(config.paths.tmp,'/serve/app/')))

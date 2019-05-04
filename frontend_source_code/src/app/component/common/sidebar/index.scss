@@ -1,8 +1,16 @@
+/**
+* @name 侧边栏
+* @author 广州银云信息科技有限公司
+*/
+
 %SHRINK-ITEM-LI {
+
     .group-name,
-    .link-span,.navbar-tip-item {
+    .link-span,
+    .navbar-tip-item {
         display: none;
     }
+
     &:hover {
         .triangle-left {
             width: 0;
@@ -15,6 +23,7 @@
             margin-top: 20px;
             z-index: 3;
         }
+
         .group-name {
             position: absolute;
             left: 60px;
@@ -29,6 +38,7 @@
             text-indent: 0;
             color: #fff;
             margin-top: 10px;
+
             span,
             p {
                 color: #fff;
@@ -45,206 +55,195 @@ sidebar-common-component {
         padding: 2px 5px;
         font-size: 12px;
     }
-    .eo-sidebar {
-        background-color: #fff;
-        position: fixed;
-        height: 100%;
-        left: 0;
-        z-index: 5;
-        top: 51px;
-        box-shadow: 0px 0px 5px #e0e0e0;
-        .common-sidebar {
-            border-right: 1px solid #e5e5e5;
-            height: 100%;
-            .shrink-a {
-                position: absolute;
-                left: 229px;
-                margin-top: 40px;
-                z-index: 2;
-                visibility: hidden;
-                .title-li {
-                    @include eo-line(25px, 24px);
-                    width: auto;
-                    .iconfont {
-                        font-size: 24px;
-                        color: #999;
-                        border-radius: 50%;
-                        background-color: #fff;
-                        &:hover {
-                            color: #333;
-                        }
-                    }
-                }
-            }
-            .container-item-li {
-                .second-sidebar {
-                    display: none;
-                }
-            }
-            .item-li {
-                @include eo-line(50px);
-                width: 240px;
-                text-indent: 15px;
-                cursor: pointer; // display: flex;
-                span {
-                    font-size: 14px;
-                }
-                .iconfont {
-                    margin-right: 12px;
-                    font-size: 20px;
-                    width: 35px;
-                }
-                .un-read-span {
-                    margin-left: 5px;
-                }
-                &:hover {
-                    background-color: #e3f1e5;
-                }
-            }
-            .divide-li {
-                border-top: 1px solid #e5e5e5;
-            }
-            .static-top-li {
-                border-bottom: 1px solid #e5e5e5;
-                background-color: #fafafa;
-                color: #999;
-                .item-li {
-                    &:hover {
-                        background-color: #f2f2f2;
-                    }
-                }
-            }
-            .divide-dashed-bottom-li {
-                border-bottom: 1px dashed #e5e5e5;
-            }
-            .elem-active {
-                .second-sidebar {
-                    display: inherit;
-                }
-                .item-li {
-                    background-color: #ecf8ee;
-                    color: #4CAF50;
-                }
-            }
-            .disable-menu-li {
-                background-color: #fafafa;
-                cursor: default;
-                span {
-                    color: #999;
-                    cursor: default;
-                }
-                &:hover {
-                    background-color: #fafafa;
-                }
-            }
-        }
-        &:hover {
-            .common-sidebar {
-                .shrink-a {
-                    visibility: visible;
-                }
-            }
-        }
-        .had-child-div {
-            .item-li {
-                width: 50px;
-                border-left: none;
-                .title-icon {
-                    margin-right: 0;
-                }
-                @extend %SHRINK-ITEM-LI;
-            }
-            .static-top-li{
-                border-bottom: 1px solid #e5e5e5;
-                background-color: #fafafa;
-                color: #999;
-                .item-li {
-                    width:240px;
-                    .title-icon {
-                        margin-right: 12px;
-                    }
-                    &:hover {
-                        background-color: #f2f2f2;
-                    }
-                }
-            }
-        }
-    }
+
     .second-sidebar {
         //二级菜单样式
-        background-color: #fff;
-        border-right: 1px solid #e5e5e5;
+        background-color: #efefef;
+        border-right: 1px solid #ddd;
         position: fixed;
         height: 100%;
         left: 50px;
         z-index: 1;
         top: 51px;
-        border-left: 1px solid #e5e5e5;
+        box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.02);
+
         .back-li,
         .ui-sref-li {
             @include eo-line(50px);
-            width: 190px;
-            text-indent: 8px;
-            .iconfont {
-                margin-right: 10px;
-                font-size: 16px;
-            }
-            font-size: 12px;
-            span {
-                font-size: 14px;
-            }
-            .iconfont {
-                margin-right: 3px;
-                font-size: 13px;
-            }
+            width: 187px;
+            text-indent: 20px;
+            font-size: 14px;
+            border-right: 3px solid transparent;
         }
+
         .back-li {
-            border-bottom: 1px solid #f2f2f2;
-            @include eo-line(49px);
+            background-color: #fafafa;
+            font-weight: bold;
+
             span {
                 color: #999;
             }
         }
+
         .ui-sref-li {
             &:hover {
-                background-color: #e3f1e5;
+                background-color: #e8f5e9;
             }
         }
-        .active {
-            .ui-sref-li {
-                background-color: #ecf8ee;
-                color: #4CAF50;
-            }
-        }
-    }
-    .had-top-static-second-sidebar{
-        top: 102px;
-    }
-}
 
-.shrink-div,
-.shrink-inside-div {
-    eo-sidebar,sidebar-common-component {
-        .eo-sidebar {
-            .common-sidebar {
-                overflow: hidden;
-                .shrink-a {
-                    left: 38px;
-                }
-                .item-li {
-                    width: 50px;
-                    border-left: none;
-                    .title-icon {
-                        margin-right: 0;
-                    }
-                    @extend %SHRINK-ITEM-LI;
-                }
+        .active,
+        .extra-active {
+            .ui-sref-li {
+                color: $buttonSuccessFocusBgColor;
+                background-color: #ffffff;
+                border-right-color: $buttonSuccessBgColor;
             }
-            .elem-active {
-                .second-sidebar {
-                    display: none;
+        }
+    }
+
+    .eo-sidebar {
+
+        height: 100%;
+
+        width: 50px;
+
+        .static-container-ul {
+            border-right: 1px solid #ddd;
+            width: 240px;
+        }
+
+        .container-item-li {
+            .second-sidebar {
+                display: none;
+            }
+        }
+
+        .common-sidebar {
+            height: 100%;
+            background-color: #fff;
+            width: 50px;
+            box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.02);
+            border-right: 1px solid #ddd;
+            z-index: 7;
+            position: fixed;
+            left: 0;
+            // z-index: 5;
+            top: 51px;
+            .item-container-ul {
+                transition: all .3s cubic-bezier(0, 0, .2, 1);
+                overflow: hidden;
+                border-right: 1px solid #ddd;
+                height: 100%;
+                background-color: #fff;
+                width: 50px;
+            }
+
+            .border-right-span {
+                position: absolute;
+                border: 1px solid transparent;
+                height: 50px;
+                left: 49px;
+                cursor: pointer;
+            }
+        }
+
+        .had-child-div {
+            box-shadow: none;
+        }
+
+        .item-li {
+            @include eo-line(50px);
+            overflow: hidden;
+            text-indent: 15px;
+            cursor: pointer;
+
+            .iconfont {
+                margin-right: 12px;
+                font-size: 20px;
+                width: 35px;
+            }
+
+            .un-read-span {
+                margin-left: 5px;
+            }
+
+            &:hover {
+                background-color: #e8f5e9;
+            }
+        }
+
+        .divide-li {
+            border-top: 1px solid #ddd;
+        }
+
+        .divide-dashed-bottom-li {
+            border-bottom: 1px dashed #e5e5e5;
+        }
+
+        .divide-dashed-top-li {
+            border-top: 1px dashed #e5e5e5;
+        }
+
+        .elem-active {
+            .second-sidebar {
+                display: inherit;
+            }
+
+            .item-li {
+                color: #fff;
+                background-color: $buttonSuccessBgColor;
+            }
+        }
+
+        .disable-menu-li {
+            background-color: #efefef;
+            cursor: default;
+
+            span {
+                color: #999;
+                cursor: default;
+            }
+
+            &:hover {
+                background-color: #efefef;
+            }
+        }
+
+        .static-top-li {
+            border-bottom: 1px solid #ddd;
+            color: #999;
+            background-color: #fff;
+
+            .title-icon {
+                background-color: #fafafa;
+                margin-right: 0;
+                padding-right: 15px;
+                border-right: 1px solid #ddd;
+            }
+
+            .item-li {
+                &:hover {
+                    background-color: #f2f2f2;
                 }
             }
         }
+
+        .hover-div {
+            .item-container-ul {
+                width: 240px;
+            }
+        }
+    }
+
+    .inside-sidebar {
+        top: 0;
+        z-index: 7;
+    }
+
+    .static-sidebar {
+        position: fixed;
+        z-index: 7;
+        top: 0;
+        left: 0;
     }
 }

@@ -1,30 +1,30 @@
 <?php
 /**
- * @name eolinker open source，eolinker开源版本
- * @link https://www.eolinker.com
- * @package eolinker
- * @author www.eolinker.com 广州银云信息科技有限公司 2015-2018
-
- * eolinker，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
- * 如在使用的过程中有任何问题，可通过http://help.eolinker.com寻求帮助
+ * @name EOLINKER ams open source，EOLINKER open source version
+ * @link https://global.eolinker.com/
+ * @package EOLINKER
+ * @author www.eolinker.com eoLinker Ltd.co 2015-2018
+ * 
+ * eoLinker is the world's leading and domestic largest online API interface management platform, providing functions such as automatic generation of API documents, API automated testing, Mock testing, team collaboration, etc., aiming to solve the problem of low development efficiency caused by separation of front and rear ends.
+ * If you have any problems during the process of use, please join the user discussion group for feedback, we will solve the problem for you with the fastest speed and best service attitude.
  *
- * 注意！eolinker开源版本遵循GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以eoLinker开源版本为基础而开发的二次版本”在互联网上流通。
- * 注意！一经发现，我们将立刻启用法律程序进行维权。
- * 再次感谢您的使用，希望我们能够共同维护国内的互联网开源文明和正常商业秩序。
+ * 
  *
+ * Website：https://global.eolinker.com/
+ * Slack：eolinker.slack.com
+ * facebook：@EoLinker
+ * twitter：@eoLinker
  */
 
 class EnvController
 {
-    // 返回json类型
     private $returnJson = array('type' => 'environment');
 
     /**
-     * 构造函数,在此判断用户登录状态以及初始化各变量
+     * Check Login
      */
     public function __construct()
     {
-        // 身份验证
         $module = new GuestModule;
         if (!$module->checkLogin()) {
             $this->returnJson['statusCode'] = '120005';
@@ -33,7 +33,7 @@ class EnvController
     }
 
     /**
-     * 获取项目环境列表
+     * Get Env List
      */
     public function getEnvList()
     {
@@ -42,48 +42,44 @@ class EnvController
         if (!preg_match('/^[0-9]{1,11}$/', $projectID)) {
             $this->returnJson['statusCode'] = '170003';
         } else {
-            $result = $service->getEnvList($projectID);
-            //验证结果
-            if ($result) {
+            $result = $service->getEnvList($projectID); 
                 $this->returnJson['statusCode'] = '000000';
                 $this->returnJson['envList'] = $result;
-            } else {
-                //环境列表为空
-                $this->returnJson['statusCode'] = '170000';
-            }
         }
         exitOutput($this->returnJson);
     }
 
     /**
-     * 添加项目环境
+     * Add Env
      */
     public function addEnv()
     {
-        //环境名称
-        $env_name = securelyInput('envName');
-        //环境名称长度
-        $name_length = mb_strlen(quickInput('envName'), 'utf8');
-        //前置URI地址
-        $front_uri = securelyInput('frontURI');
-        //请求头部
-        $headers = json_decode(quickInput('headers'), TRUE);
-        //全局变量
-        $params = json_decode(quickInput('params'), TRUE);
-        //额外参数
-        $additional_params = json_decode(quickInput('additionalParams'), TRUE);
-        $projectID = securelyInput('projectID');
-        $apply_protocol = -1;
+    	//环境名称
+    	$env_name = securelyInput('envName');
+    	//环境名称长度
+    	$name_length = mb_strlen(quickInput('envName'), 'utf8');
+    	//前置URI地址
+    	$front_uri = securelyInput('frontURI');
+    	//请求头部
+    	$env_header = quickInput('headers');
+    	//全局变量
+    	$global_variable = quickInput('params');
+    	//环境鉴权
+    	$env_auth = quickInput('envAuth');
+    	//额外参数
+    	$additional_variable = quickInput('additionalParams');
+    	//环境说明
+    	$env_desc = quickInput('envDesc');
+    	//判断名称长度是否合法
+    	$projectID = securelyInput('projectID');
         if (!preg_match('/^[0-9]{1,11}$/', $projectID)) {
             $this->returnJson['statusCode'] = '170003';
-        } //判断名称长度是否合法
+        }
         elseif ($name_length < 1 || $name_length > 32) {
-            //环境名称格式非法
             $this->returnJson['statusCode'] = '170001';
         } else {
             $service = new EnvModule;
-            $result = $service->addEnv($projectID, $env_name, $front_uri, $headers, $params, $apply_protocol, $additional_params);
-            //验证结果是否成功
+            $result = $service->addEnv($projectID, $env_name, $env_desc,$front_uri, $env_header, $env_auth,$global_variable, $additional_variable);
             if ($result) {
                 $this->returnJson['statusCode'] = '000000';
                 $this->returnJson['envID'] = $result;
@@ -93,9 +89,35 @@ class EnvController
         }
         exitOutput($this->returnJson);
     }
-
     /**
-     * 删除项目环境
+     *Batch delete Env
+     */
+    public function batchDeleteEnv()
+    {
+    	$env_id = securelyInput('envID');
+    	$env_id = json_decode($env_id, TRUE);
+    	$project_id = securelyInput('projectID');
+    	// 判断环境ID是否合法
+    	if(empty($env_id))
+    	{
+    		// 环境ID不合法
+    		$this->return_json['statusCode'] = '170002';
+    	}
+    	elseif (!preg_match('/^[0-9]{1,11}$/', $project_id)) {
+    		$this->returnJson['statusCode'] = '170003';
+    	}else{
+    		    $service = new EnvModule();
+    			$env_ids = implode(",", $env_id);
+    			if ($service->batchDeleteEnv($project_id, $env_ids)) {
+    				$this->returnJson['statusCode'] = '000000';
+    			} else {
+    				$this->returnJson['statusCode'] = '170000';
+    			} 
+    	}
+    	exitOutput($this->returnJson);
+    }
+    /**
+     * Delete Env
      */
     public function deleteEnv()
     {
@@ -103,16 +125,14 @@ class EnvController
         $project_id = securelyInput('projectID');
         if (!preg_match('/^[0-9]{1,11}$/', $project_id)) {
             $this->returnJson['statusCode'] = '170003';
-        } //判断环境ID是否合法
+        } 
         elseif (!preg_match('/^[0-9]{1,11}$/', $env_id)) {
-            //环境ID不合法
             $this->returnJson['statusCode'] = '170002';
         } else {
             $service = new EnvModule();
             if ($service->deleteEnv($project_id, $env_id)) {
                 $this->returnJson['statusCode'] = '000000';
             } else {
-                //删除环境失败，projectID与envID不匹配
                 $this->returnJson['statusCode'] = '170000';
             }
         }
@@ -120,37 +140,69 @@ class EnvController
     }
 
     /**
-     * 修改项目环境
+     * Edit Env
      */
     public function editEnv()
     {
         $env_id = securelyInput('envID');
+        //环境名称
         $env_name = securelyInput('envName');
+        //环境名称长度
         $name_length = mb_strlen(quickInput('envName'), 'utf8');
         //前置URI地址
         $front_uri = securelyInput('frontURI');
         //请求头部
-        $headers = json_decode(quickInput('headers'), TRUE);
+        $env_header = quickInput('headers');
         //全局变量
-        $params = json_decode(quickInput('params'), TRUE);
+        $global_variable = quickInput('params');
+        //环境鉴权
+        $env_auth = quickInput('envAuth');
         //额外参数
-        $additional_params = json_decode(quickInput('additionalParams'), TRUE);
-        $apply_protocol = -1;
+        $additional_variable = quickInput('additionalParams');
+        //环境说明
+        $env_desc = quickInput('envDesc');
         if ($name_length < 1 || $name_length > 32) {
-            //环境名称格式非法
             $this->returnJson['statusCode'] = '170001';
         } elseif (!preg_match('/^[0-9]{1,11}$/', $env_id)) {
-            //环境ID不合法
             $this->returnJson['statusCode'] = '170002';
         } else {
             $service = new EnvModule();
-            if ($service->editEnv($env_id, $env_name, $front_uri, $headers, $params, $apply_protocol, $additional_params)) {
+            if ($service->editEnv($env_id, $env_name,$env_desc, $front_uri, $env_header, $env_auth,$global_variable, $additional_variable)) {
                 $this->returnJson['statusCode'] = '000000';
             } else {
-                //修改失败
                 $this->returnJson['statusCode'] = '170000';
             }
         }
         exitOutput($this->returnJson);
+    }
+    /**
+     * 获取项目环境信息
+     */
+    public function getEnvInfo()
+    {
+    	$project_id = securelyInput('projectID');
+    	$env_id = securelyInput('envID');
+    	if(! preg_match('/^[0-9]{1,11}$/', $env_id))
+    	{
+    		// 环境ID不合法
+    		$this->return_json['statusCode'] = '170002';
+    	}
+    	else
+    	{
+    		  $service = new EnvModule();
+    			$result = $service -> getEnvInfo($project_id, $env_id);
+    			// 验证结果
+    			if($result)
+    			{
+    				$this->returnJson['statusCode'] = '000000';
+    				$this->returnJson['envInfo'] = $result;
+    			}
+    			else
+    			{
+    				// 环境列表为空
+    				$this->returnJson['statusCode'] = '170000';
+    			}    		
+    	}
+    	exitOutput($this->returnJson);
     }
 }

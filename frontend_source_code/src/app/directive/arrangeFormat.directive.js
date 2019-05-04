@@ -1,172 +1,172 @@
-(function() {
+(function () {
     'use strict';
     /**
-     * @name eolinker open source，eolinker开源版本
-     * @link https://www.eolinker.com
-     * @package eolinker
-     * @author www.eolinker.com 广州银云信息科技有限公司 2015-2018
-
-     * eolinker，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
-     * 如在使用的过程中有任何问题，可通过[图片]http://help.eolinker.com寻求帮助
-     *
-     * 注意！eolinker开源版本遵循GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以eoLinker开源版本为基础而开发的二次版本”在互联网上流通。
-     * 注意！一经发现，我们将立刻启用法律程序进行维权。
-     * 再次感谢您的使用，希望我们能够共同维护国内的互联网开源文明和正常商业秩序。
-     *
-     * @function [格式整理指令js] [Formatting instructions JS]
-     * @version  3.0.2
-     * @service  $compile [注入$compile服务] [inject $compile service]
-     * @service  $filter [注入过滤器服务] [inject filter service]
-     * @service  $rootScope [注入根作用域服务] [inject rootScope service]
-     * @param    interaction [交互参数] [Interaction parameter]
+     * @name 格式整理指令
+     * @author 广州银云信息科技有限公司
+     * @param [object] interaction （request{onlyOneTime:是否只执行一次，type：自定义格式整理类型},response）
      */
     angular.module('eolinker.directive')
-        .directive('arrangeFormat', ['$compile', '$filter', '$rootScope', function($compile, $filter, $rootScope) {
+        .directive('arrangeFormat', ['Cache_CommonService', '$filter', '$rootScope', function (Cache_CommonService, $filter, $rootScope) {
             return {
                 restrict: 'A',
                 scope: {
-                    interaction: '=' 
+                    interaction: '=' ,//交互参数,
                 },
                 require: '?ngModel',
-                link: function($scope, elem, attrs, ngModel) {
+                link: function ($scope, elem, attrs, ngModel) {
                     var data = {
-                        info: {
-                            //整理状态（0：字段错误，1：字段正确，整理前的字段结果,2:整理后的字段结果,3:暂无内容）
-                            //Finishing state (0: field error, 1: field correct, field results before sorting, 2: collation of field results, 3: no content)
-                            status: 0, 
+                            status: 0, //整理状态（0：字段错误，1：字段正确，整理前的字段结果,2:整理后的字段结果,3:暂无内容）
                             text: {
                                 origin: null,
-                                result: null
+                                result: null,
+                                assistantText: null
                             },
-                            originHtml: null
+                            originHtml: null,
+                            timer: null
                         },
-                        fun: {
-                            init: null, 
-                            render: null, 
-                            click: null, 
-                            hide: null, 
-                            show: null, 
-                            format: {
-                                json: null, 
-                                html: null 
-                            }
+                        fun = {},
+                        interaction = $scope.interaction || {
+                            request: {},
+                            response: {}
                         },
-                        interaction: $scope.interaction || { request: {}, response: {} }
+                        service = {
+                            cache: Cache_CommonService
+                        }
+                    fun.loop = function () {
+                        switch (data.formatType) {
+                            case 'json':
+                                {
+                                    angular.element(document.getElementById(attrs.arrangeFormat)).append(data.text.assistantText);
+                                    break;
+                                }
+                            default:
+                                {
+                                    angular.element(document.getElementById(attrs.arrangeFormat)).append(data.text.assistantText.substring(0, 65535));
+                                    if (data.text.assistantText.length < 65535) {
+                                        return;
+                                    } else {
+                                        data.text.assistantText = data.text.assistantText.substring(65535, data.text.assistantText.length);
+                                        data.timer = setTimeout(function () {
+                                            fun.loop()
+                                        }, 100);
+                                    }
+                                    break;
+                                }
+                        }
                     }
-
-                    /**
-                     * @function [json格式整理功能函数] [JSON format function]
-                     * @param    {[obj]}   arg [{text:需过滤的文本 Text to be filtered}]
-                     */
-                    data.fun.format.json = function(arg) {
+                    fun.formatJson = function (arg) {
+                        data.formatType = 'json';
+                        arg.text = arg.text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
                         try {
                             try {
-                                return data.info.text.result = $compile($filter('JsonformatFilter')(arg.text, 4))($scope);
+                                return data.text.result = $filter('JsonformatFilter')(arg.text, 4);
                             } catch (childE) {
-                                return data.info.text.result = $compile($filter('JsonformatFilter')(JSON.stringify($filter('JsonLintFilter')(arg.text)), 4))($scope);
+                                return data.text.result = $filter('JsonformatFilter')(JSON.stringify($filter('JsonLintFilter')(arg.text)), 4);
                             }
                         } catch (e) {
                             switch (arg.status) {
                                 case 0:
-                                    { //一次性格式整理 One time format arrangement
-                                        return (arg.text || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                                        break;
+                                    { //一次性格式整理
+                                        return (arg.text || '');
                                     }
                                 default:
                                     {
-                                        return data.info.text.result = $compile('<span style="color: #f1592a;font-weight:bold;font-family: Menlo, Monaco, Consolas, Helvetica, 微软雅黑, monospace, Arial, sans-serif, 黑体;">' + e + '</span>')($scope);
-                                        break;
+                                        return data.text.result = '<span style="color: #f1592a;font-weight:bold;font-family: Menlo, Monaco, Consolas, Helvetica, Microsoft YaHei, monospace, Arial, sans-serif, SimHei;">' + e + '</span>';
                                     }
                             }
 
                         }
                     }
-                    /**
-                     * @function [html/xml格式整理功能函数] [Html/xml format function]
-                     * @param    {[obj]}   arg [{text:需过滤的文本 Text to be filtered}]
-                     */
-                    data.fun.format.html = function(arg) {
+                    fun.formatHtml = function (arg) {
                         try {
                             return $filter('HtmlformatFilter')(arg.text, 5).replace(/</g, '&lt;').replace(/>/g, '&gt;');
                         } catch (e) {
-                            data.info.status = 0;
+                            data.status = 0;
                             return arg.text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
                         }
                     }
-
-                    /**
-                     * @function [ngModel.$render ng-model值发生变化时执行函数] [The execution function when the ngModel.$render ng-model value changes]
-                     */
-                    data.fun.render = function() {
-                        data.info.text.origin = ngModel.$viewValue;
-                        if (!ngModel.$viewValue) {
-                            data.info.status = 3;
-                            data.info.text.result = data.info.originHtml;
+                    fun.render = function () {
+                        data.text.origin = attrs.cacheVariable ? service.cache.get(attrs.cacheVariable) : ngModel.$viewValue;
+                        if (!data.text.origin) {
+                            data.status = 3;
+                            data.text.result = data.originHtml;
                         } else {
-                            data.info.status = 2;
-                            if (data.interaction.request.onlyOneTime) { //仅格式整理不相互转化 Only format arrangement does not transform each other
-                                if (/^(<)(.*)(>)$/.test(data.info.text.origin.replace(/\s/g, ""))) {
-                                    data.info.text.result = data.fun.format.html({ text: data.info.text.origin });
+                            data.status = 2;
+                            if (interaction.request.onlyOneTime) { //仅格式整理不相互转化
+                                if (/^(<)(.*)(>)$/.test(data.text.origin.replace(/\s/g, ""))) {
+                                    data.text.result = fun.formatHtml({
+                                        text: data.text.origin
+                                    });
                                 } else {
-                                    data.info.text.result = data.fun.format.json({ text: data.info.text.origin, status: 0 });
+                                    data.text.result = fun.formatJson({
+                                        text: data.text.origin,
+                                        status: 0
+                                    });
                                 }
-                            } else if (data.interaction.request.type) { //自定义格式整理类型（0:json,1:xml,2:html）Custom formatting types (0:json, 1:xml, 2:html)
-                                switch (data.interaction.request.type) {
+                            } else if (interaction.request.type) { //自定义格式整理类型（0:json,1:xml,2:html）
+                                switch (interaction.request.type) {
                                     case 0:
                                         {
-                                            data.info.text.result = data.fun.format.json({ text: data.info.text.origin, status: 1 });
+                                            data.text.result = fun.formatJson({
+                                                text: data.text.origin,
+                                                status: 1
+                                            });
                                             break;
                                         }
                                     case 1:
                                     case 2:
                                         {
-                                            if (/^(<)(.*)(>)$/.test(data.info.text.origin.replace(/\s/g, ""))) {
-                                                data.info.text.result = data.fun.format.html({ text: data.info.text.origin });
+                                            if (/^(<)(.*)(>)$/.test(data.text.origin.replace(/\s/g, ""))) {
+                                                data.text.result = fun.formatHtml({
+                                                    text: data.text.origin
+                                                });
                                             } else {
-                                                data.info.status = 0;
-                                                data.info.text.result = (data.info.text.origin || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                                                data.status = 0;
+                                                data.text.result = (data.text.origin || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                                             }
                                             break;
                                         }
                                     default:
                                         {
-                                            data.info.status = 0;
-                                            data.info.text.result = (data.info.text.origin || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                                            data.status = 0;
+                                            data.text.result = (data.text.origin || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                                         }
                                 }
-                            } else { //主动判断格式是否为json或xml进行整理 Whether the active judgment format is JSON or XML is arranged
-                                if (/^({|\[)(.*)(}|])$/.test(data.info.text.origin.replace(/\s/g, ""))) {
-                                    data.info.text.result = data.fun.format.json({ text: data.info.text.origin, status: 1 });
-                                } else if (/author="eolinker-frontend"/.test(data.info.text.origin.replace(/\s/g, ""))) {
-                                    data.info.text.result = data.info.text.origin;
-                                } else if (/^(<)(.*)(>)$/.test(data.info.text.origin.replace(/\s/g, ""))) {
-                                    data.info.text.result = data.fun.format.html({ text: data.info.text.origin });
+                            } else { //主动判断格式是否为json或xml进行整理
+                                if (/^({|\[)(.*)(}|])$/.test(data.text.origin.replace(/\s/g, ""))) {
+                                    data.text.result = fun.formatJson({
+                                        text: data.text.origin,
+                                        status: 1
+                                    });
+                                } else if (/^(<img)(.*)(author="eolinker-frontend")(.*)(>)$/.test(data.text.origin.replace(/\s/g, ""))) {
+                                    data.text.result = data.text.origin;
+                                } else if (/^(<)(.*)(>)$/.test(data.text.origin.replace(/\s/g, ""))) {
+                                    data.text.result = fun.formatHtml({
+                                        text: data.text.origin
+                                    });
                                 } else {
-                                    data.info.status = 0;
-                                    data.info.text.result = (data.info.text.origin || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                                    data.status = 0;
+                                    data.text.result = (data.text.origin || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
                                 }
                             }
                         }
                         angular.element(document.getElementById(attrs.arrangeFormat)).empty();
-                        
-                        angular.element(document.getElementById(attrs.arrangeFormat)).append(data.info.text.result);
+                        data.text.assistantText = data.text.result;
+                        fun.loop();
                     };
-
-                    /**
-                     * @function [节点单击功能函数(格式前后转换)] [Node click function (format before and after conversion)]
-                     */
-                    data.fun.click = function() {
-                        switch (data.info.status) {
+                    fun.click = function () {
+                        switch (data.status) {
                             case 0:
                                 {
-                                    $rootScope.InfoModal($filter('translate')('360'), 'error');
+                                    $rootScope.InfoModal($filter('translate')('309'), 'error');
                                     break;
                                 }
                             case 2:
                                 {
-                                    data.info.status = 1;
+                                    data.status = 1;
                                     angular.element(document.getElementById(attrs.arrangeFormat)).empty();
-                                    angular.element(document.getElementById(attrs.arrangeFormat)).append((data.info.text.origin || '').replace(/</g, '&lt;').replace(/>/g, '&gt;'));
+                                    data.text.assistantText = (data.text.origin || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                                    fun.loop()
                                     break;
                                 }
                             case 3:
@@ -175,21 +175,17 @@
                                 }
                             default:
                                 {
-                                    data.info.status = 2;
+                                    data.status = 2;
                                     angular.element(document.getElementById(attrs.arrangeFormat)).empty();
-                                    angular.element(document.getElementById(attrs.arrangeFormat)).append(data.info.text.result);
+                                    data.text.assistantText = data.text.result;
+                                    fun.loop()
                                     break;
                                 }
                         }
                     }
-
-                    /**
-                     * @function [json格式整理后收缩按钮功能函数] [Shrink button function after JSON format]
-                     * @param    {[obj]}   arg [{target:该目标节点 The target node}] 
-                     */
-                    data.fun.hide = function(arg) {
+                    fun.hide = function (arg) {
                         var template = {
-                            parent: arg.target.parentNode,
+                            parent: arg.parentNode,
                             html: null,
                             type: null,
                             size: null
@@ -198,44 +194,44 @@
                         template.size = template.parent.getAttribute('data-size');
                         template.parent.setAttribute('data-inner', template.parent.innerHTML);
                         if (template.type === 'array') {
-                            template.html = '<i  style="cursor:pointer;color: #3ab54a;font-size: 13px;padding: 0 5px;" class="iconfont icon-youjiantou-copy" ng-click="show($event)" ></i>Array[<span class="json_number">' + template.size + '</span>]';
+                            template.html = '<i  style="cursor:pointer;color: #3ab54a;font-size: 13px;padding-right:5px;" class="iconfont icon-youjiantou-copy" onclick="$eo.directive.arrangeFormat.show(this)" ></i>Array[<span class="json_number">' + template.size + '</span>]';
                         } else {
-                            template.html = '<i style="cursor:pointer;color: #3ab54a;font-size: 13px;padding: 0 5px;" class="iconfont icon-youjiantou-copy" ng-click="show($event)"></i>Object{...}';
+                            template.html = '<i style="cursor:pointer;color: #3ab54a;font-size: 13px;padding-right:5px;" class="iconfont icon-youjiantou-copy" onclick="$eo.directive.arrangeFormat.show(this)"></i>Object{...}';
                         }
                         angular.element(template.parent).empty();
-                        angular.element(template.parent).append($compile(template.html)($scope));
+                        angular.element(template.parent).append(template.html);
                     }
-
-                    /**
-                     * @function [json格式整理后展示按钮功能函数] [Display button function after JSON format]
-                     * @param    {[obj]}   arg [{target:该目标节点 The target node}]
-                     */
-                    data.fun.show = function(arg) {
+                    fun.show = function (arg) {
                         var template = {
-                            parent: arg.target.parentNode,
+                            parent: arg.parentNode,
                             html: null
                         }
                         template.html = template.parent.getAttribute('data-inner');
                         angular.element(template.parent).empty();
-                        angular.element(template.parent).append($compile(template.html)($scope));
+                        angular.element(template.parent).append(template.html);
                     }
-
-                    /**
-                     * @function [初始化功能函数] [Initialization]
-                     */
-                    data.fun.init = function() {
+                    fun.init = function () {
+                        service.cache.clear(attrs.cacheVariable);
                         if (ngModel) {
-                            ngModel.$render = data.fun.render;
+                            ngModel.$render = fun.render;
                         }
-                        if (!data.interaction.request.onlyOneTime) {
-                            elem.bind('click', data.fun.click);
+                        if (!interaction.request.onlyOneTime) {
+                            elem.bind('click', fun.click);
                         }
-                        data.info.originHtml = document.getElementById(attrs.arrangeFormat).innerHTML;
-                        $scope.hide = data.fun.hide;
-                        $scope.show = data.fun.show;
-                    }
-                    data.fun.init();
+                        data.originHtml = document.getElementById(attrs.arrangeFormat).innerHTML;
+                        window.$eo.directive.arrangeFormat = window.$eo.directive.arrangeFormat || {};
+                        if (!window.$eo.directive.arrangeFormat.hide) {
+                            window.$eo.directive.arrangeFormat.hide = fun.hide;
+                        }
+                        if (!window.$eo.directive.arrangeFormat.show) {
+                            window.$eo.directive.arrangeFormat.show = fun.show;
+                        }
 
+                    }
+                    fun.init();
+                    $scope.$on('$stateChangeStart', function () {
+                        if (data.timer) clearTimeout(data.timer)
+                    })
                 }
             };
         }]);

@@ -1,47 +1,49 @@
 <?php
 /**
- * @name eolinker open source，eolinker开源版本
- * @link https://www.eolinker.com
- * @package eolinker
- * @author www.eolinker.com 广州银云信息科技有限公司 2015-2018
-
- * eolinker，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
- * 如在使用的过程中有任何问题，可通过http://help.eolinker.com寻求帮助
+ * @name EOLINKER ams open source，EOLINKER open source version
+ * @link https://global.eolinker.com/
+ * @package EOLINKER
+ * @author www.eolinker.com eoLinker Ltd.co 2015-2018
+ * 
+ * eoLinker is the world's leading and domestic largest online API interface management platform, providing functions such as automatic generation of API documents, API automated testing, Mock testing, team collaboration, etc., aiming to solve the problem of low development efficiency caused by separation of front and rear ends.
+ * If you have any problems during the process of use, please join the user discussion group for feedback, we will solve the problem for you with the fastest speed and best service attitude.
  *
- * 注意！eolinker开源版本遵循GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以eoLinker开源版本为基础而开发的二次版本”在互联网上流通。
- * 注意！一经发现，我们将立刻启用法律程序进行维权。
- * 再次感谢您的使用，希望我们能够共同维护国内的互联网开源文明和正常商业秩序。
+ * 
  *
+ * Website：https://global.eolinker.com/
+ * Slack：eolinker.slack.com
+ * facebook：@EoLinker
+ * twitter：@eoLinker
  */
 
 class GuestDao
 {
     /**
-     * 用户名注册
-     * @param $userName string 用户名
-     * @param $hashPassword string 密码
-     * @param $userNickName string 昵称
+     * User register
+     * @param $userName string username
+     * @param $hashPassword string password
+     * @param $userNickName string nickname
      * @return bool
      */
     public function register(&$userName, &$hashPassword, &$userNickName)
     {
         $db = getDatabase();
 
-        //判断是否已存在用户
+        
         $result = $db->prepareExecute('SELECT eo_user.userID FROM eo_user WHERE userName=?;', array($userName));
 
-        //已存在则返回
+        
         if (!empty($result))
             return FALSE;
 
-        //若不存在则插入
+       
         $result = $db->prepareExecute('INSERT INTO eo_user (eo_user.userName,eo_user.userPassword,eo_user.userNickName) VALUES (?,?,?);', array(
             $userName,
             $hashPassword,
             $userNickName
         ));
 
-        //插入成功
+       
         if ($db->getAffectRow() > 0)
             return $db->getLastInsertID();
         else
@@ -49,8 +51,8 @@ class GuestDao
     }
 
     /**
-     * 检查用户名是否存在
-     * @param $userName string 用户名
+     *check user name exist
+     * @param $userName string 
      * @return bool
      */
     public function checkUserNameExist(&$userName)
@@ -66,8 +68,8 @@ class GuestDao
     }
 
     /**
-     * 获取用户信息
-     * @param $loginName string 登录用户名
+     * get login info
+     * @param $loginName string 
      * @return bool
      */
     public function getLoginInfo(&$loginName)

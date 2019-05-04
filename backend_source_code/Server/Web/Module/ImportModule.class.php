@@ -1,17 +1,19 @@
 <?php
 /**
- * @name eolinker open source，eolinker开源版本
- * @link https://www.eolinker.com
- * @package eolinker
- * @author www.eolinker.com 广州银云信息科技有限公司 2015-2018
-
- * eolinker，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
- * 如在使用的过程中有任何问题，可通过http://help.eolinker.com寻求帮助
+ * @name EOLINKER ams open source，EOLINKER open source version
+ * @link https://global.eolinker.com/
+ * @package EOLINKER
+ * @author www.eolinker.com eoLinker Ltd.co 2015-2018
+ * 
+ * eoLinker is the world's leading and domestic largest online API interface management platform, providing functions such as automatic generation of API documents, API automated testing, Mock testing, team collaboration, etc., aiming to solve the problem of low development efficiency caused by separation of front and rear ends.
+ * If you have any problems during the process of use, please join the user discussion group for feedback, we will solve the problem for you with the fastest speed and best service attitude.
  *
- * 注意！eolinker开源版本遵循GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以eoLinker开源版本为基础而开发的二次版本”在互联网上流通。
- * 注意！一经发现，我们将立刻启用法律程序进行维权。
- * 再次感谢您的使用，希望我们能够共同维护国内的互联网开源文明和正常商业秩序。
+ * 
  *
+ * Website：https://global.eolinker.com/
+ * Slack：eolinker.slack.com
+ * facebook：@EoLinker
+ * twitter：@eoLinker
  */
 
 class ImportModule
@@ -22,8 +24,8 @@ class ImportModule
     }
 
     /**
-     * 导入eolinker导出的Json格式数据
-     * @param $data string 从eolinker导出的Json格式数据
+     * Import eoAPI format and Export Json Data
+     * @param $data string Export Json
      * @return bool
      */
     public function eoapiImport(&$data)
@@ -33,8 +35,8 @@ class ImportModule
     }
 
     /**
-     * 导入DHC
-     * @param $data string 从DHC导出的Json格式数据
+     * Import DHC
+     * @param $data string Export DHC data
      * @return bool
      */
     public function importDHC(&$data)
@@ -42,8 +44,7 @@ class ImportModule
         try {
             $projectInfo = array('projectName' => $data['nodes'][0]['name'], 'projectType' => 0, 'projectVersion' => 1.0);
 
-            //生成分组信息
-            $groupInfoList[] = array('groupName' => 'DHC导入', 'id' => $data['nodes'][0]['id']);
+            $groupInfoList[] = array('groupName' => 'Import DHC', 'id' => $data['nodes'][0]['id']);
             if (is_array($data['nodes'])) {
                 foreach ($data['nodes'] as $element) {
                     if ($element['type'] == 'Service') {
@@ -64,15 +65,12 @@ class ImportModule
                             $apiInfo['baseInfo']['apiName'] = $element['name'];
                             $apiInfo['baseInfo']['apiURI'] = $element['uri']['path'];
                             $apiInfo['baseInfo']['apiProtocol'] = ($element['uri']['scheme']['name'] == 'http') ? 0 : 1;
-                            $apiInfo['baseInfo']['apiStatus'] = 0;
-                            $apiInfo['baseInfo']['starred'] = 0;
                             $apiInfo['baseInfo']['apiSuccessMock'] = '';
                             $apiInfo['baseInfo']['apiFailureMock'] = '';
+                            $apiInfo['baseInfo']['apiStatus'] = 0;
+                            $apiInfo['baseInfo']['starred'] = 0;
                             $apiInfo['baseInfo']['apiRequestParamType'] = 0;
                             $apiInfo['baseInfo']['apiRequestRaw'] = '';
-                            $apiInfo['baseInfo']['apiNoteType'] = 0;
-                            $apiInfo['baseInfo']['apiNote'] = '';
-                            $apiInfo['baseInfo']['apiNoteRaw'] = '';
                             $apiInfo['baseInfo']['apiUpdateTime'] = date("Y-m-d H:i:s", time());
                             switch ($element['method']['name']) {
                                 case 'POST' :
@@ -145,8 +143,8 @@ class ImportModule
     }
 
     /**
-     * 导入V1版本postman
-     * @param $data string 从Postman V1版本导出的Json格式数据
+     * Import v1 Version from postman
+     * @param $data string
      * @return bool
      */
     public function importPostmanV1(&$data)
@@ -154,7 +152,7 @@ class ImportModule
         try {
             $projectInfo = array('projectName' => $data['name'], 'projectType' => 0, 'projectVersion' => 1.0);
 
-            $groupInfoList[] = array('groupName' => '默认分组', 'folderID' => 'default');
+            $groupInfoList[] = array('groupName' => 'Default Group', 'folderID' => 'default');
             if (is_array($data['folders'])) {
                 foreach ($data['folders'] as $folder) {
                     $groupInfoList[] = array('groupName' => $folder['name'], 'folderID' => $folder['id']);
@@ -181,9 +179,6 @@ class ImportModule
                             $apiInfo['baseInfo']['apiFailureMock'] = '';
                             $apiInfo['baseInfo']['apiRequestParamType'] = 0;
                             $apiInfo['baseInfo']['apiRequestRaw'] = '';
-                            $apiInfo['baseInfo']['apiNoteType'] = 0;
-                            $apiInfo['baseInfo']['apiNote'] = '';
-                            $apiInfo['baseInfo']['apiNoteRaw'] = '';
                             $apiInfo['baseInfo']['apiUpdateTime'] = date("Y-m-d H:i:s", time());
                             switch ($request['method']) {
                                 case 'POST' :
@@ -259,8 +254,8 @@ class ImportModule
     }
 
     /**
-     * 导入V2版本postman
-     * @param $data string 从Postman V2版本导出的Json格式数据
+     * Import v2 Version from Postman
+     * @param $data string
      * @return bool
      */
     public function importPostmanV2(&$data)
@@ -272,7 +267,7 @@ class ImportModule
                 'projectVersion' => 1.0
             );
             $groups = array();
-            $groups[0]['groupName'] = '默认分组';
+            $groups[0]['groupName'] = 'Default Group';
             $groups[0]['apiList'] = array();
 
             $group_count = 1;
@@ -293,14 +288,9 @@ class ImportModule
                     $api_info['baseInfo']['apiStatus'] = 0;
                     $api_info['baseInfo']['starred'] = 0;
                     $api_info['baseInfo']['apiRequestRaw'] = $item['request']['body']['raw'];
-                    $api_info['baseInfo']['apiSuccessMock'] = '';
-                    $api_info['baseInfo']['apiFailureMock'] = '';
-                    $api_info['baseInfo']['apiNoteType'] = 0;
-                    $api_info['baseInfo']['apiNote'] = '';
-                    $api_info['baseInfo']['apiNoteRaw'] = '';
                     $api_info['baseInfo']['apiUpdateTime'] = date("Y-m-d H:i:s", time());
 
-                    // 判断请求参数的类型
+                    
                     if ($item['request']['body']['mode'] == 'raw') {
                         $api_info['baseInfo']['apiRequestParamType'] = 1;
                     } else {
@@ -406,14 +396,9 @@ class ImportModule
                         $api_info['baseInfo']['apiStatus'] = 0;
                         $api_info['baseInfo']['starred'] = 0;
                         $api_info['baseInfo']['apiRequestRaw'] = $api['request']['body']['raw'];
-                        $api_info['baseInfo']['apiSuccessMock'] = '';
-                        $api_info['baseInfo']['apiFailureMock'] = '';
-                        $api_info['baseInfo']['apiNoteType'] = 0;
-                        $api_info['baseInfo']['apiNote'] = '';
-                        $api_info['baseInfo']['apiNoteRaw'] = '';
                         $api_info['baseInfo']['apiUpdateTime'] = date("Y-m-d H:i:s", time());
 
-                        // 判断请求参数的类型
+                        
                         if ($api['request']['body']['mode'] == 'raw') {
                             $api_info['baseInfo']['apiRequestParamType'] = 1;
                         } else {
@@ -490,8 +475,8 @@ class ImportModule
     }
 
     /**
-     * 导入swagger
-     * @param string $content 内容
+     * Import Swaager
+     * @param string $content 
      * @return bool
      */
     public function importSwagger(&$content)
@@ -499,10 +484,10 @@ class ImportModule
         $user_id = $_SESSION['userID'];
         $swagger = json_decode($content, TRUE);
         $project_info = $swagger['info'];
-        // 项目类型默认web
+        
         $project_type = '0';
-        // 新建一个默认的状态码分组
-        $group_info_list[] = array('groupName' => '默认分组');
+        
+        $group_info_list[] = array('groupName' => 'Default Group');
         $request_type = array(
             'POST' => '0',
             'GET' => '1',
@@ -512,12 +497,12 @@ class ImportModule
             'OPTIONS' => '5',
             'PATCH' => '6'
         );
-        // 请求协议数组
+      
         $protocol = array(
             'HTTP' => 0,
             'HTTPS' => 1
         );
-        // 请求参数类型数组
+        
         $param_type = array(
             'string' => '0',
             'file' => '1',
@@ -535,16 +520,16 @@ class ImportModule
             'object' => '13',
             'number' => '14'
         );
-        // 获取请求协议
+      
         $api_protocol = $protocol[strtoupper($swagger['schemes'][0])];
         if (empty($api_protocol)) {
             $api_protocol = 1;
         }
-        // 如果项目描述为空，默认为title
+       
         if (empty($project_info['description'])) {
             $project_info['description'] = $project_info['title'];
         }
-        // 项目信息
+        
         $project_info = array(
             'projectName' => $project_info['title'],
             'projectType' => $project_type,
@@ -555,7 +540,7 @@ class ImportModule
         $api_list = array();
         $group_name_list = array();
         foreach ($apiList as $api_uri => $api_info_list) {
-            // 拆分详细api接口信息
+            
             foreach ($api_info_list as $api_request_type => $api_info) {
                 $group_name = $api_info['tags'][0];
                 if (in_array($group_name, $group_name_list)) {
@@ -568,20 +553,20 @@ class ImportModule
         if (is_array($group_info_list)) {
             foreach ($group_info_list as &$group_info) {
                 if (is_array($apiList)) {
-                    // 拆分多条api接口信息
+                   
                     foreach ($apiList as $api_uri => $api_info_list) {
-                        // 拆分详细api接口信息
+                        
                         foreach ($api_info_list as $api_request_type => $api_info) {
                             if ($api_info['tags'][0] != $group_info['groupName']) {
                                 continue;
                             }
                             if (empty($api_info['summary'])) {
-                                // 如果接口名不存在跳过
+                               
                                 $api_info['summary'] = $api_info['operationId'];
                             }
-                            // 获取接口名称
+                            
                             $apiInfo['baseInfo']['apiName'] = $api_info['summary'];
-                            // 获取请求路径
+                           
                             // if(strpos($uri, '{'))
                             // {
                             // $api_uri = preg_replace('/\{.*\}/', $api_info['operationId'], $uri);
@@ -590,19 +575,19 @@ class ImportModule
                             // {
                             // $api_uri = $uri;
                             // }
-                            // 获取路径
+                            
                             $apiInfo['baseInfo']['apiURI'] = $api_uri;
-                            // 接口状态默认启用
+                            
                             $apiInfo['baseInfo']['apiStatus'] = 0;
-                            // 接口请求参数的类型
+                            
                             $apiInfo['baseInfo']['apiRequestParamType'] = 0;
-                            // 星标状态
+                            
                             $apiInfo['baseInfo']['starred'] = 0;
-                            // 接口备注的类型
+                            
                             $apiInfo['baseInfo']['apiNoteType'] = 0;
-                            // 获取请求方式
+                            
                             $apiInfo['baseInfo']['apiRequestType'] = $request_type[strtoupper($api_request_type)];
-                            // 请求头部
+                            
                             $apiInfo['headerInfo'] = array();
                             if ($api_info['consumes']) {
                                 for ($i = 0; $i < count($api_info['consumes']); $i++) {
@@ -620,14 +605,14 @@ class ImportModule
                                     );
                                 }
                             }
-                            // 获取请求参数
+                           
                             $apiInfo['requestInfo'] = array();
                             if ($api_info['parameters']) {
                                 $i = 0;
                                 foreach ($api_info['parameters'] as $param) {
-                                    // 获取请求参数名称
+                                    
                                     $apiInfo['requestInfo'][$i]['paramKey'] = $param['name'];
-                                    // 获取请求参数类型
+                                    
                                     switch ($param['type']) {
                                         case "integer" :
                                             $apiInfo['requestInfo'][$i]['paramType'] = $param_type['int'];
@@ -674,23 +659,23 @@ class ImportModule
                                         default :
                                             $apiInfo['requestInfo'][$i]['paramType'] = $param_type['string'];
                                     }
-                                    // 获取参数说明
+                                    
                                     $apiInfo['requestInfo'][$i]['paramName'] = $param['description'];
-                                    // 获取是否可以为空
+                                    
                                     $apiInfo['requestInfo'][$i]['paramNotNull'] = $param['required'] ? 0 : 1;
-                                    // 设置参数值示例
+                                    
                                     $apiInfo['requestInfo'][$i]['paramValue'] = '';
                                     ++$i;
                                 }
                             }
 
-                            // 返回结果
+                            
                             $apiInfo['resultInfo'] = array();
                             if ($api_info['responses']) {
                                 $k = 0;
                                 foreach ($api_info['responses'] as $paramKey => $respon) {
                                     $apiInfo['resultInfo'][$k]['paramType'] = '';
-                                    // 获取返回参数类型
+                                    
                                     switch ($respon['schema']['type']) {
                                         case "integer" :
                                             $apiInfo['resultInfo'][$k]['paramType'] = $param_type['int'];
@@ -737,22 +722,17 @@ class ImportModule
                                         default :
                                             $apiInfo['resultInfo'][$k]['paramType'] = $param_type['string'];
                                     }
-                                    // 获取返回参数名
+                                    
                                     $apiInfo['resultInfo'][$k]['paramKey'] = $paramKey;
-                                    // 获取返回参数说明
+                                   
                                     $apiInfo['resultInfo'][$k]['paramName'] = $respon['description'];
-                                    // 获取返回值
+                                    
                                     $apiInfo['resultInfo'][$k]['paramNotNull'] = '0';
                                     ++$k;
                                 }
                             }
-                            $apiInfo['baseInfo']['apiSuccessMock'] = '';
-                            $apiInfo['baseInfo']['apiFailureMock'] = '';
-                            $apiInfo['baseInfo']['apiNoteRaw'] = '';
-                            $apiInfo['baseInfo']['apiNote'] = '';
+
                             $apiInfo['baseInfo']['apiRequestRaw'] = '';
-                            $apiInfo['baseInfo']['mockRule'] = '';
-                            $apiInfo['baseInfo']['mockResult'] = '';
                             $apiInfo['baseInfo']['apiProtocol'] = $api_protocol;
                             $apiInfo['baseInfo']['apiUpdateTime'] = date('Y-m-d H:i:s', time());
 
@@ -776,7 +756,7 @@ class ImportModule
     }
 
     /**
-     * 导入RAP
+     * Import RAP
      * @param $data
      * @return bool
      */
@@ -815,13 +795,8 @@ class ImportModule
                         $api_info['baseInfo']['apiProtocol'] = 1;
                         $api_info['baseInfo']['apiStatus'] = 0;
                         $api_info['baseInfo']['starred'] = 0;
-                        $api_info['baseInfo']['apiSuccessMock'] = $action['responseTemplate'];
-                        $api_info['baseInfo']['apiFailureMock'] = '';
                         $api_info['baseInfo']['apiRequestParamType'] = 0;
                         $api_info['baseInfo']['apiRequestRaw'] = '';
-                        $api_info['baseInfo']['apiNoteType'] = 0;
-                        $api_info['baseInfo']['apiNote'] = '&lt;p&gt;' . $action['description'] . '&lt;p&gt;';
-                        $api_info['baseInfo']['apiNoteRaw'] = '';
                         $api_info['baseInfo']['apiUpdateTime'] = date("Y-m-d H:i:s", time());
                         switch ($action['requestType']) {
                             case '1' :
@@ -842,7 +817,7 @@ class ImportModule
                                 break;
                             default :
                                 $api_info['baseInfo']['apiRequestType'] = 1;
-                                //默认设置为GET
+                                
                                 break;
                         }
 
@@ -856,7 +831,7 @@ class ImportModule
                             $param['paramName'] = $parameter['name'];
                             $param['paramLimit'] = $parameter['dataType'];
                             $param['paramValueList'] = array();
-                            //获取请求参数类型
+                            
                             $param['paramType'] = $this->getDataType($parameter['dataType']);
                             $api_request_param[] = $param;
                             if (!empty($parameter['parameterList'])) {
@@ -867,7 +842,7 @@ class ImportModule
                                     $param1['paramNotNull'] = 0;
                                     $param1['paramName'] = $parameter1['name'];
                                     $param1['paramValueList'] = array();
-                                    //获取请求参数类型
+                                    
                                     $param1['paramType'] = $this->getDataType($parameter1['dataType']);
                                     $api_request_param[] = $param1;
                                     if (!empty($parameter1['parameterList'])) {
@@ -878,7 +853,7 @@ class ImportModule
                                             $param2['paramNotNull'] = 0;
                                             $param2['paramName'] = $parameter2['name'];
                                             $param2['paramValueList'] = array();
-                                            //获取请求参数类型
+                                            
                                             $param2['paramType'] = $this->getDataType($parameter2['dataType']);
                                             $api_request_param[] = $param2;
                                             if (!empty($parameter2['parameterList'])) {
@@ -889,7 +864,7 @@ class ImportModule
                                                     $param3['paramNotNull'] = 0;
                                                     $param3['paramName'] = $parameter3['name'];
                                                     $param3['paramValueList'] = array();
-                                                    //获取请求参数类型
+                                                    
                                                     $param3['paramType'] = $this->getDataType($parameter3['dataType']);
                                                     $api_request_param[] = $param3;
                                                     if (!empty($parameter3['parameterList'])) {
@@ -900,7 +875,7 @@ class ImportModule
                                                             $param4['paramNotNull'] = 0;
                                                             $param4['paramName'] = $parameter4['name'];
                                                             $param4['paramValueList'] = array();
-                                                            //获取请求参数类型
+                                                            
                                                             $param4['paramType'] = $this->getDataType($parameter4['dataType']);
                                                             $api_request_param[] = $param4;
                                                             if (!empty($parameter4['parameterList'])) {
@@ -911,7 +886,7 @@ class ImportModule
                                                                     $param5['paramNotNull'] = 0;
                                                                     $param5['paramName'] = $parameter5['name'];
                                                                     $param5['paramValueList'] = array();
-                                                                    //获取请求参数类型
+                                                                    
                                                                     $param5['paramType'] = $this->getDataType($parameter5['dataType']);
                                                                     $api_request_param[] = $param5;
                                                                     if (!empty($parameter5['parameterList'])) {
@@ -922,7 +897,7 @@ class ImportModule
                                                                             $param6['paramNotNull'] = 0;
                                                                             $param6['paramName'] = $parameter6['name'];
                                                                             $param6['paramValueList'] = array();
-                                                                            //获取请求参数类型
+                                                                            
                                                                             $param6['paramType'] = $this->getDataType($parameter6['dataType']);
                                                                             $api_request_param[] = $param6;
                                                                             unset($param6);
@@ -954,7 +929,7 @@ class ImportModule
                             $param['paramNotNull'] = 0;
                             $param['paramName'] = $parameter['name'];
                             $param['paramValueList'] = array();
-                            //获取请求参数类型
+                            
                             $param['paramType'] = $this->getDataType($parameter['dataType']);
                             $api_result_param[] = $param;
                             if (!empty($parameter['parameterList'])) {
@@ -963,7 +938,7 @@ class ImportModule
                                     $param1['paramNotNull'] = 0;
                                     $param1['paramName'] = $parameter1['name'];
                                     $param1['paramValueList'] = array();
-                                    //获取请求参数类型
+                                    
                                     $param1['paramType'] = $this->getDataType($parameter1['dataType']);
                                     $api_result_param[] = $param1;
                                     if (!empty($parameter1['parameterList'])) {
@@ -972,7 +947,7 @@ class ImportModule
                                             $param2['paramNotNull'] = 0;
                                             $param2['paramName'] = $parameter2['name'];
                                             $param2['paramValueList'] = array();
-                                            //获取请求参数类型
+                                            
                                             $param2['paramType'] = $this->getDataType($parameter2['dataType']);
                                             $api_result_param[] = $param2;
                                             if (!empty($parameter2['parameterList'])) {
@@ -981,7 +956,7 @@ class ImportModule
                                                     $param3['paramNotNull'] = 0;
                                                     $param3['paramName'] = $parameter3['name'];
                                                     $param3['paramValueList'] = array();
-                                                    //获取请求参数类型
+                                                    
                                                     $param3['paramType'] = $this->getDataType($parameter3['dataType']);
                                                     $api_result_param[] = $param3;
                                                     if (!empty($parameter3['parameterList'])) {
@@ -990,7 +965,7 @@ class ImportModule
                                                             $param4['paramNotNull'] = 0;
                                                             $param4['paramName'] = $parameter4['name'];
                                                             $param4['paramValueList'] = array();
-                                                            //获取请求参数类型
+                                                            
                                                             $param4['paramType'] = $this->getDataType($parameter4['dataType']);
                                                             $api_result_param[] = $param4;
                                                             if (!empty($parameter4['parameterList'])) {
@@ -999,7 +974,7 @@ class ImportModule
                                                                     $param5['paramNotNull'] = 0;
                                                                     $param5['paramName'] = $parameter5['name'];
                                                                     $param5['paramValueList'] = array();
-                                                                    //获取请求参数类型
+                                                                   
                                                                     $param5['paramType'] = $this->getDataType($parameter5['dataType']);
                                                                     $api_result_param[] = $param5;
                                                                     if (!empty($parameter5['parameterList'])) {
@@ -1008,7 +983,7 @@ class ImportModule
                                                                             $param6['paramNotNull'] = 0;
                                                                             $param6['paramName'] = $parameter6['name'];
                                                                             $param6['paramValueList'] = array();
-                                                                            //获取请求参数类型
+                                                                            
                                                                             $param6['paramType'] = $this->getDataType($parameter6['dataType']);
                                                                             $api_result_param[] = $param6;
                                                                             unset($param6);
@@ -1056,7 +1031,7 @@ class ImportModule
     }
 
     /**
-     * 获取数据类型
+     * Get Data Type
      * @param $data_type
      * @return mixed|string
      */
@@ -1064,7 +1039,6 @@ class ImportModule
     {
         $param_type = array('string' => '0', 'file' => '1', 'json' => '2', 'int' => '3', 'float' => '4', 'double' => '5', 'date' => '6', 'datetime' => '7', 'boolean' => '8', 'byte' => '9', 'short' => '10', 'long' => '11', 'array' => '12', 'object' => '13', 'number' => '14');
         $type = 'array';
-        //获取请求参数类型
         switch ($data_type) {
             case "integer":
                 $type = $param_type['int'];

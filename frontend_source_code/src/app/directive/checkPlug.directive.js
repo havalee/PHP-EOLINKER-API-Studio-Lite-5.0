@@ -6,7 +6,7 @@
      */
     angular.module('eolinker.directive')
 
-        .directive('checkPlugDirective', ['$compile', function ($compile) {
+        .directive('checkPlugDirective', ['$timeout', function ($timeout) {
             return {
                 restrict: 'AE',
                 scope: {
@@ -14,33 +14,58 @@
                 },
                 link: function ($scope, elem, attrs, ctrl) {
                     var data = {
-                        fun: {
-                            init: null //初始话检测功能函数
-                        }
+                        timer:null
                     }
-                    data.fun.init = (function () {
+                    var fun={};
+                    fun.init = (function () {
+                        try{
+                            $scope.input.version=0;
+                        }catch(e){}
                         if (navigator.mimeTypes['application/eolinker'] || (window.plug && window.plug.type == "application/eolinker")) {
-                            $scope.input.useStatus = 1;
                             if ($scope.input.needVersion) {
                                 try {
-
                                     $scope.input.version = window.plug.version;
-                                    if ($scope.input.matchVersion) $scope.input.useStatus = $scope.input.version >= $scope.input.matchVersion;
+                                    $scope.input.matchVersion=$scope.input.matchVersion||451;
+                                    $scope.input.useStatus = $scope.input.version >= ($scope.input.matchVersion||451);
                                     $scope.input.versionString = JSON.stringify(window.plug.version).split('').join('.');
                                     return;
                                 } catch (e) {}
                             } else {
+                                if($scope.input.number){
+                                    $scope.input.useStatus =1;
+                                }else{
+                                    $scope.input.useStatus =true;
+                                }
                                 return;
                             }
                         }
                         angular.element(document.getElementById('plug-inner-script')).bind('DOMNodeInserted', function (e) {
-                            $scope.input.useStatus = 1;
                             $scope.input.version = window.plug.version;
-                            if ($scope.input.matchVersion) $scope.input.useStatus = $scope.input.version >= $scope.input.matchVersion;
+                            $scope.input.matchVersion=$scope.input.matchVersion||451;
+                            if ($scope.input.needVersion) {
+                                $scope.input.useStatus = $scope.input.version >= $scope.input.matchVersion;
+                            }else{
+                                if($scope.input.number){
+                                    $scope.input.useStatus =1;
+                                }else{
+                                    $scope.input.useStatus =true;
+                                }
+                            }
                             $scope.input.versionString = JSON.stringify(window.plug.version).split('').join('.');
                             $scope.$root && $scope.$root.$$phase || $scope.$apply();
                         });
+                        if(!$scope.input.number){
+                            data.timer=$timeout(function () {
+                                $scope.input.useStatus=$scope.input.useStatus||false;
+                            },1000);
+                        }
+                        
                     })()
+                    $scope.$on('$destroy', function () { //页面销毁功能函数
+                        if (data.timer) {
+                            $timeout.cancel(data.timer);
+                        }
+                    });
                 }
             };
         }]);

@@ -287,7 +287,7 @@
                         }
                     };
 
-                    this.addToSortableElements = function(se) { //添加到排序节点集 Add to the sorted node set
+                    this.addToSortableElements = function(se) { //新建到排序节点集 Add to the sorted node set
                         getSortableElements(mapKey).push(se);
                     };
                     this.removeFromSortableElements = function(se) { //从原本排序节点集移除 Remove from the original sorted node set
@@ -505,12 +505,12 @@
                 require: '?^svElement', //依赖svElement指令 Depends on the svElement directive
                 link: function($scope, $element, $attrs, $svCtrl) {
                     if ($svCtrl)
-                        $svCtrl.handle = $element.add($svCtrl.handle); // 支持添加多级把手 Support to add multi-level handles
+                        $svCtrl.handle = $element.add($svCtrl.handle); // 支持新建多级把手 Support to add multi-level handles
                 }
             };
         });
 
-    angular.element(document.head).append([//头部添加style Add style to head
+    angular.element(document.head).append([//头部新建style Add style to head
         '<style>' +
         '.sv-helper{' +
         'position: fixed !important;' +

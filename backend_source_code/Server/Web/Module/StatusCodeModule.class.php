@@ -1,17 +1,19 @@
 <?php
 /**
- * @name eolinker open source，eolinker开源版本
- * @link https://www.eolinker.com
- * @package eolinker
- * @author www.eolinker.com 广州银云信息科技有限公司 2015-2018
-
- * eolinker，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
- * 如在使用的过程中有任何问题，可通过http://help.eolinker.com寻求帮助
+ * @name EOLINKER ams open source，EOLINKER open source version
+ * @link https://global.eolinker.com/
+ * @package EOLINKER
+ * @author www.eolinker.com eoLinker Ltd.co 2015-2018
+ * 
+ * eoLinker is the world's leading and domestic largest online API interface management platform, providing functions such as automatic generation of API documents, API automated testing, Mock testing, team collaboration, etc., aiming to solve the problem of low development efficiency caused by separation of front and rear ends.
+ * If you have any problems during the process of use, please join the user discussion group for feedback, we will solve the problem for you with the fastest speed and best service attitude.
  *
- * 注意！eolinker开源版本遵循GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以eoLinker开源版本为基础而开发的二次版本”在互联网上流通。
- * 注意！一经发现，我们将立刻启用法律程序进行维权。
- * 再次感谢您的使用，希望我们能够共同维护国内的互联网开源文明和正常商业秩序。
+ * 
  *
+ * Website：https://global.eolinker.com/
+ * Slack：eolinker.slack.com
+ * facebook：@EoLinker
+ * twitter：@eoLinker
  */
 
 class StatusCodeModule
@@ -22,7 +24,7 @@ class StatusCodeModule
     }
 
     /**
-     * 获取项目用户类型
+     * Get User Type
      * @param $codeID
      * @return bool|int
      */
@@ -42,24 +44,32 @@ class StatusCodeModule
     }
 
     /**
-     * 添加状态码
-     * @param $groupID int 分组ID
-     * @param $codeDesc string 状态码描述，默认为NULL
-     * @param $code string 状态码
+     * Add Code
+     * @param $groupID int
+     * @param $codeDesc string 
+     * @param $code string 
      * @return bool|int
      */
-    public function addCode(&$groupID, &$codeDesc, &$code)
+    public function addCode(&$projectID,&$groupID, &$status_code_list)
     {
         $projectDao = new ProjectDao;
         $statusCodeGroupDao = new StatusCodeGroupDao;
         $statusCodeDao = new StatusCodeDao;
         if ($projectID = $statusCodeGroupDao->checkStatusCodeGroupPermission($groupID, $_SESSION['userID'])) {
             $projectDao->updateProjectUpdateTime($projectID);
-            $result = $statusCodeDao->addCode($groupID, $codeDesc, $code);
-            if ($result) {
-                //将操作写入日志
+            $result = $statusCodeDao->addCode($projectID,$groupID, $status_code_list);
+            if ($result) {         	
+            		$statu_code = '';
+            		foreach ($result as $k)
+            		{
+            			if($k['code'] && $k['codeDesc'])
+            			{
+            				$statu_code .= $k['code'].',';
+            			}
+            		}
+            	$statu_code = rtrim($statu_code, ',');
                 $log_dao = new ProjectLogDao();
-                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE, $result, ProjectLogDao::$OP_TYPE_ADD, "添加状态码:'{$code}'", date("Y-m-d H:i:s", time()));
+                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE, $result, ProjectLogDao::$OP_TYPE_ADD, "Add Status Code:'{$code}'", date("Y-m-d H:i:s", time()));
                 return $result;
             } else {
                 return FALSE;
@@ -69,8 +79,8 @@ class StatusCodeModule
     }
 
     /**
-     * 删除状态码
-     * @param $codeID int 状态码ID
+     * Delete Status Code
+     * @param $codeID int
      * @return bool
      */
     public function deleteCode(&$codeID)
@@ -82,9 +92,9 @@ class StatusCodeModule
             $result = $statusCodeDao->deleteCode($codeID);
             if ($result) {
                 $projectDao->updateProjectUpdateTime($projectID);
-                //将操作写入日志
+                
                 $log_dao = new ProjectLogDao();
-                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE, $code_ids, ProjectLogDao::$OP_TYPE_DELETE, "删除状态码:'{$status_codes}'", date("Y-m-d H:i:s", time()));
+                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE, $code_ids, ProjectLogDao::$OP_TYPE_DELETE, "Delete Status Code:'{$status_codes}'", date("Y-m-d H:i:s", time()));
 
                 return TRUE;
             } else {
@@ -95,8 +105,8 @@ class StatusCodeModule
     }
 
     /**
-     * 批量删除状态码
-     * @param $code_ids string 状态码ID
+     * Batch Delete Status code
+     * @param $code_ids string 
      * @return bool
      */
     public function deleteCodes(&$code_ids)
@@ -111,9 +121,9 @@ class StatusCodeModule
         $status_codes = $status_code_dao->getStatusCodes($code_ids);
         if ($status_code_dao->deleteCodes($code_ids)) {
             $projectDao->updateProjectUpdateTime($projectID);
-            //将操作写入日志
+            
             $log_dao = new ProjectLogDao();
-            $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE, $code_ids, ProjectLogDao::$OP_TYPE_DELETE, "删除状态码:'{$status_codes}'", date("Y-m-d H:i:s", time()));
+            $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE, $code_ids, ProjectLogDao::$OP_TYPE_DELETE, "Delete Status Code:'{$status_codes}'", date("Y-m-d H:i:s", time()));
 
             return TRUE;
         } else {
@@ -122,8 +132,8 @@ class StatusCodeModule
     }
 
     /**
-     * 获取状态码列表
-     * @param $groupID int 分组ID
+     * Get code lIST
+     * @param $groupID int
      * @return array|bool
      */
     public function getCodeList(&$groupID)
@@ -137,8 +147,8 @@ class StatusCodeModule
     }
 
     /**
-     * 获取所有状态码列表
-     * @param $projectID int 项目ID
+     * gET ALL CODE LIST
+     * @param $projectID int
      * @return array|bool
      */
     public function getAllCodeList(&$projectID)
@@ -152,11 +162,11 @@ class StatusCodeModule
     }
 
     /**
-     * 修改状态码
-     * @param $groupID int 分组ID
-     * @param $codeID int 状态码ID
-     * @param $code string 状态码
-     * @param $codeDesc string 状态码描述，默认为NULL
+     * Edit Status Code
+     * @param $groupID int 
+     * @param $codeID int 
+     * @param $code string 
+     * @param $codeDesc string 
      * @return bool
      */
     public function editCode(&$groupID, &$codeID, &$code, &$codeDesc)
@@ -167,9 +177,9 @@ class StatusCodeModule
             $projectDao->updateProjectUpdateTime($projectID);
             $result = $statusCodeDao->editCode($groupID, $codeID, $code, $codeDesc);
             if ($result) {
-                //将操作写入日志
+                
                 $log_dao = new ProjectLogDao();
-                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE, $codeID, ProjectLogDao::$OP_TYPE_UPDATE, "修改状态码:'{$code}'", date("Y-m-d H:i:s", time()));
+                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE, $codeID, ProjectLogDao::$OP_TYPE_UPDATE, "Edit Status Code:'{$code}'", date("Y-m-d H:i:s", time()));
                 return $result;
             } else {
                 return FALSE;
@@ -179,9 +189,9 @@ class StatusCodeModule
     }
 
     /**
-     * 搜索状态码
-     * @param $projectID int 项目ID
-     * @param $tips string 搜索关键字
+     * Search Status Code
+     * @param $projectID int 
+     * @param $tips string 
      * @return array|bool
      */
     public function searchStatusCode(&$projectID, &$tips)
@@ -195,8 +205,8 @@ class StatusCodeModule
     }
 
     /**
-     * 获取状态码数量
-     * @param $projectID int 项目ID
+     * Get Status Code Num
+     * @param $projectID int
      * @return int|bool
      */
     public function getStatusCodeNum(&$projectID)
@@ -210,7 +220,7 @@ class StatusCodeModule
     }
 
     /**
-     * 通过Excel批量添加状态码
+     * Batch add Status Code by Excel
      * @param $group_id
      * @param $code_list
      * @return bool
@@ -222,9 +232,9 @@ class StatusCodeModule
         if ($projectID = $statusCodeGroupDao->checkStatusCodeGroupPermission($group_id, $_SESSION['userID'])) {
             $result = $statusCodeDao->addStatusCodeByExcel($group_id, $code_list);
             if ($result) {
-                //将操作写入日志
+                
                 $log_dao = new ProjectLogDao();
-                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE, $group_id, ProjectLogDao::$OP_TYPE_ADD, "通过导入Excel添加状态码", date("Y-m-d H:i:s", time()));
+                $log_dao->addOperationLog($projectID, $_SESSION['userID'], ProjectLogDao::$OP_TARGET_STATUS_CODE, $group_id, ProjectLogDao::$OP_TYPE_ADD, "Add Status Code by Excel", date("Y-m-d H:i:s", time()));
                 return $result;
             } else {
                 return FALSE;

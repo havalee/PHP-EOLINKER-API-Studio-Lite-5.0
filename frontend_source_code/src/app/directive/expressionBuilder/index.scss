@@ -134,9 +134,9 @@
                     .iconfont {
                         font-size: 12px;
                         margin-left: 5px;
-                        color: $buttonDangerBorderColor;
+                        color: $buttonDangerBgColor;
                         &:hover {
-                            color: $buttonDangerFocusBorderColor;
+                            color:$buttonDangerFocusBgColor;
                         }
                     }
                 }

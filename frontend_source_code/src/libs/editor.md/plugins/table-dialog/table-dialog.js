@@ -13,7 +13,7 @@
 
 	var factory = function (exports) {
 
-		var $            = jQuery;
+		var $            = Zepto;
 		var pluginName   = "table-dialog";
 
 		var langs = {
@@ -82,8 +82,8 @@
 			var dialogContent = [
 				"<div class=\"editormd-form\" style=\"padding: 13px 0;\">",
 				"<label>" + dialogLang.cellsLabel + "</label>",
-				dialogLang.rows + " <input type=\"number\" value=\"3\" class=\"number-input\" style=\"width:40px;\" max=\"100\" min=\"2\" data-rows />&nbsp;&nbsp;",
-				dialogLang.cols + " <input type=\"number\" value=\"2\" class=\"number-input\" style=\"width:40px;\" max=\"100\" min=\"1\" data-cols /><br/>",
+				dialogLang.rows + " <input autocomplete=\"off\" type=\"number\" value=\"3\" class=\"number-input\" style=\"width:40px;\" max=\"100\" min=\"2\" data-rows />&nbsp;&nbsp;",
+				dialogLang.cols + " <input autocomplete=\"off\" type=\"number\" value=\"2\" class=\"number-input\" style=\"width:40px;\" max=\"100\" min=\"1\" data-cols /><br/>",
 				"<label>" + dialogLang.alignLabel + "</label>",
 				"<div class=\"fa-btns\"></div>",
 				"</div>"
@@ -179,8 +179,8 @@
 				{
 					var checked = (i === 0) ? " checked=\"checked\"" : "";
 					var btn = "<a href=\"javascript:;\"><label for=\"editormd-table-dialog-radio"+i+"\" title=\"" + _lang[i] + "\">";
-					btn += "<input type=\"radio\" name=\"table-align\" id=\"editormd-table-dialog-radio"+i+"\" value=\"" + values[i] + "\"" +checked + " />&nbsp;";
-					btn += "<i class=\"fa fa-" + icons[i] + "\"></i>";
+					btn += "<input autocomplete=\"off\" type=\"radio\" name=\"table-align\" id=\"editormd-table-dialog-radio"+i+"\" value=\"" + values[i] + "\"" +checked + " />&nbsp;";
+					btn += "<i class=\"fa wangeditor-menu-img-" + icons[i] + "\"></i>";
 					btn += "</label></a>";
 
 					faBtns.append(btn);
@@ -194,23 +194,7 @@
 	if (typeof require === "function" && typeof exports === "object" && typeof module === "object")
     { 
         module.exports = factory;
-    }
-	// else if (typeof define === "function")  // AMD/CMD/Sea.js
-    // {
-	// 	if (define.amd) { // for Require.js
-
-	// 		define(["editormd"], function(editormd) {
-    //             factory(editormd);
-    //         });
-
-	// 	} else { // for Sea.js
-	// 		define(function(require) {
-    //             var editormd = require("./../../editormd");
-    //             factory(editormd);
-    //         });
-	// 	}
-	// } 
-	else
+    }else
 	{
         factory(window.editormd);
 	}

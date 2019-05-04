@@ -1,15 +1,15 @@
 (function() {
     'use strict';
     /**
-     * @name eolinker open source，eolinker开源版本
+     * @name EOLINKER AMS OPEN SOURCE，EOLINKER AMS开源版本
      * @link https://www.eolinker.com
-     * @package eolinker
+     * @package EOLINKER AMS
      * @author www.eolinker.com 广州银云信息科技有限公司 2015-2018
 
-     * eolinker，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
+     * EOLINKER，业内领先的Api接口管理及测试平台，为您提供最专业便捷的在线接口管理、测试、维护以及各类性能测试方案，帮助您高效开发、安全协作。
      * 如在使用的过程中有任何问题，可通过[图片]http://help.eolinker.com寻求帮助
      *
-     * 注意！eolinker开源版本遵循GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以eoLinker开源版本为基础而开发的二次版本”在互联网上流通。
+     *注意！EOLINKER AMS 开源版本遵循 GPL V3开源协议，仅供用户下载试用，禁止“一切公开使用于商业用途”或者“以 EOLINKER AMS开源版本为基础而开发的二次版本”在互联网上流通。。
      * 注意！一经发现，我们将立刻启用法律程序进行维权。
      * 再次感谢您的使用，希望我们能够共同维护国内的互联网开源文明和正常商业秩序。
      *
@@ -51,7 +51,7 @@
                             isClick: false,
                             success: false,
                             fun: '',
-                            text:attrs.buttonHtml || $filter('translate')('370')//显示button文本（默认文本'点击复制'）Display button text (default text 'click Copy')
+                            text:attrs.buttonHtml || $filter('translate')('310')//显示button文本（默认文本$filter('translate')('310')）Display button text (default text 'click Copy')
                         }
                     },
                     fun: {
@@ -70,9 +70,9 @@
                         $scope.data.info.clipboard.isClick = true;
                         console.info('Text:', _default.text);
                         if (attrs.isPopup) {//成功或者失败是否以弹窗形式提醒 Does the success or failure remind in popups
-                            $rootScope.InfoModal($filter('translate')('371'), 'success');
+                            $rootScope.InfoModal($filter('translate')('311'), 'success');
                         } else {
-                            $scope.data.info.clipboard.text = $filter('translate')('372');
+                            $scope.data.info.clipboard.text = $filter('translate')('312');
                         }
                         $scope.$digest();
                         _default.clearSelection();
@@ -83,9 +83,9 @@
                         $scope.data.info.clipboard.isClick = true;
                         console.info('Text:', _default.text);
                         if (attrs.isPopup) {
-                            $rootScope.InfoModal($filter('translate')('373'), 'error');
+                            $rootScope.InfoModal($filter('translate')('301'), 'error');
                         } else {
-                            $scope.data.info.clipboard.text = $filter('translate')('374');
+                            $scope.data.info.clipboard.text = $filter('translate')('302');
                         }
                         $scope.$digest();
                     });

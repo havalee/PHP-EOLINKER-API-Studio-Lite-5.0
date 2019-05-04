@@ -1,20 +1,20 @@
 <?php
 
 /**
- * @name eolinker ams open source，eolinker开源版本
- * @link https://www.eolinker.com/
- * @package eolinker
- * @author www.eolinker.com 广州银云信息科技有限公司 2015-2017
- * eoLinker是目前全球领先、国内最大的在线API接口管理平台，提供自动生成API文档、API自动化测试、Mock测试、团队协作等功能，旨在解决由于前后端分离导致的开发效率低下问题。
- * 如在使用的过程中有任何问题，欢迎加入用户讨论群进行反馈，我们将会以最快的速度，最好的服务态度为您解决问题。
+ * @name EOLINKER ams open source，EOLINKER open source version
+ * @link https://global.eolinker.com/
+ * @package EOLINKER
+ * @author www.eolinker.com eoLinker Ltd.co 2015-2018
+ * 
+ * eoLinker is the world's leading and domestic largest online API interface management platform, providing functions such as automatic generation of API documents, API automated testing, Mock testing, team collaboration, etc., aiming to solve the problem of low development efficiency caused by separation of front and rear ends.
+ * If you have any problems during the process of use, please join the user discussion group for feedback, we will solve the problem for you with the fastest speed and best service attitude.
  *
- * eoLinker AMS开源版的开源协议遵循Apache License 2.0，如需获取最新的eolinker开源版以及相关资讯，请访问:https://www.eolinker.com/#/os/download
+ * 
  *
- * 官方网站：https://www.eolinker.com/
- * 官方博客以及社区：http://blog.eolinker.com/
- * 使用教程以及帮助：http://help.eolinker.com/
- * 商务合作邮箱：market@eolinker.com
- * 用户讨论QQ群：284421832
+ * Website：https://global.eolinker.com/
+ * Slack：eolinker.slack.com
+ * facebook：@EoLinker
+ * twitter：@eoLinker
  */
 class DatabaseModule
 {
@@ -25,8 +25,7 @@ class DatabaseModule
 
     /**
      * get userType from database
-     * 获取数据字典用户类型
-     * @param $dbID int 数据库ID
+     * @param $dbID int DatabaseID
      * @return bool|int
      */
     public function getUserType(&$dbID)
@@ -42,9 +41,8 @@ class DatabaseModule
 
     /**
      * add database
-     * 添加数据库
-     * @param $dbName string 数据库名
-     * @param $dbVersion string 数据库版本，默认1.0
+     * @param $dbName string Database Name
+     * @param $dbVersion string Database version, version 1.0
      * @return bool|int
      */
     public function addDatabase(&$dbName, &$dbVersion = "1.0")
@@ -55,8 +53,7 @@ class DatabaseModule
 
     /**
      * delete database
-     * 删除数据库
-     * @param $dbID int 数据库ID
+     * @param $dbID int  DATABASEID
      * @return bool
      */
     public function deleteDatabase(&$dbID)
@@ -70,7 +67,6 @@ class DatabaseModule
 
     /**
      * get all database list
-     * 获取数据库列表
      * @return bool|array
      */
     public function getDatabaseList()
@@ -80,7 +76,7 @@ class DatabaseModule
     }
 
     /**
-     * 获取数据库详情
+     * Get Database Info
      * @param $dbID
      * @return array|bool
      */
@@ -92,10 +88,9 @@ class DatabaseModule
 
     /**
      * edit database
-     * 修改数据库
-     * @param $dbID int 数据库ID
-     * @param $dbName string 数据库名
-     * @param $dbVersion string 数据库版本
+     * @param $dbID int DatabaseID
+     * @param $dbName string Database Name
+     * @param $dbVersion string Database version
      * @return bool
      */
     public function editDatabase(&$dbID, &$dbName, &$dbVersion)
@@ -109,9 +104,8 @@ class DatabaseModule
 
     /**
      * Import database table which export from mysql
-     * 导入数据表
      * @param $dbName
-     * @param $tables array 数据库表
+     * @param $tables array Database table
      * @return bool
      */
     public function importDatabase(&$dbName, &$tables)
@@ -121,16 +115,13 @@ class DatabaseModule
         $tableList = array();
         foreach ($tables as $table) {
             $fieldList = array();
-            //将各字段信息分割成一行一个
             preg_match_all('/.+?[\r\n]+/s', $table['tableField'], $fields);
 
             $primaryKeys = '';
             foreach ($fields[0] as $field) {
                 $field = trim($field);
-                //以'`'开头的是字段
                 if (strpos($field, '`') === 0) {
                     $fieldName = substr($field, 1, strpos(substr($field, 1), '`'));
-                    //将字段类型和长度的混合提取出来
                     preg_match('/`\\s(.+?)\\s/', $field, $type);
                     preg_match("/COMMENT.*'(.*?)'/", $field, $fieldDesc);
                     if (empty($fieldDesc)) {
@@ -145,14 +136,12 @@ class DatabaseModule
                     if (strpos($type[1], '(')) {
                         $fieldType = substr($type[1], 0, strpos($type[1], '('));
                         if (preg_match('/\([0-9]{1,10}/', $type[1], $match)) {
-                            //长度用左括号右边第一个10位内数字表示
                             $fieldLength = substr($match[0], 1);
                         } else {
                             $fieldLength = '0';
                         }
                     } else {
                         $fieldType = $type[1];
-                        //未注明长度，默认为0
                         $fieldLength = '0';
                     }
 
@@ -170,13 +159,11 @@ class DatabaseModule
                     );
                 }
 
-                //以PRIMARY KEY开头的是整个表中主键的集合
                 if (strpos($field, 'PRIMARY') !== FALSE) {
                     $table['primaryKey'] = $table['primaryKey'] . substr($field, strpos($field, '('));
                 }
             }
 
-            //判断各字段是否为主键
             foreach ($fieldList as &$tableField) {
                 if (strpos($table['primaryKey'], $tableField['fieldName']) !== FALSE) {
                     $tableField['isPrimaryKey'] = 1;
@@ -202,8 +189,7 @@ class DatabaseModule
 
     /**
      * Import database by database's data which export from the api named exportDatabase
-     * 导入数据字典界面数据库
-     * @param $data string 数据库相关数据
+     * @param $data string Database reSource
      * @return bool
      */
     public function importDatabaseByJson(&$data)
@@ -220,8 +206,7 @@ class DatabaseModule
 
     /**
      * Export database's data
-     * 数据表导出成为json格式
-     * @param $dbID int 数据库ID
+     * @param $dbID int DatabaseID
      * @return bool|string
      */
     public function exportDatabase(&$dbID)
@@ -249,15 +234,12 @@ class DatabaseModule
         foreach ($tables as $table) {
             $field_list = array();
             $fields = array();
-            // 将各字段信息分割成一行一个
             preg_match_all('/.+?[\r\n]+/s', $table ['tableField'], $fields);
 
             foreach ($fields [0] as $field) {
                 $field = trim($field);
-                // 以'`'开头的是字段
                 if (strpos($field, '"') === 0) {
                     $field_name = substr($field, 1, strpos(substr($field, 1), '"'));
-                    // 将字段类型和长度的混合提取出来
                     $type = array();
                     preg_match('/`\\s(.+?)\\s/', $field, $type);
                     if (!$type [1]) {
@@ -270,14 +252,12 @@ class DatabaseModule
                         $field_type = substr($type [1], 0, strpos($type [1], '('));
                         $match = array();
                         if (preg_match('/\([0-9]{1,10}/', $type [1], $match)) {
-                            // 长度用左括号右边第一个10位内数字表示
                             $field_length = substr($match [0], 1);
                         } else {
                             $field_length = '0';
                         }
                     } else {
                         $field_type = $type [1];
-                        // 未注明长度，默认为0
                         $field_length = '0';
                     }
 

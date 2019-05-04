@@ -38,7 +38,7 @@ gulp.task('partials', function() {
 /**
  * [Html,Js,Css压缩合并]
  */
-gulp.task('html', ['plug:timestamp', 'inject', 'partials'], function() {
+gulp.task('html', [ 'inject', 'partials'], function() {
     var partialsInjectFile = gulp.src(path.join(config.paths.tmp, '/partials/templateCacheHtml.js'), {
         read: false
     });
@@ -135,17 +135,7 @@ gulp.task('fonts', function() {
         .pipe($.flatten())
         .pipe(gulp.dest(path.join(config.paths.dist, '/font/')));
 });
-/**
- * [复制文件] 前端依赖库以及静态文件
- */
-gulp.task('plug:timestamp', function() {
-    return gulp.src([
-            path.join(config.paths.src, '/app/constant/plug.constant.js')
-        ])
-        .pipe($.replace(/.js\?timestamp=.*?\'/g, '.js?timestamp='+(new Date()).getTime()+'\''))
-        .pipe($.replace(/.css\?timestamp=.*?\'/g, '.css?timestamp='+(new Date()).getTime()+'\''))
-        .pipe(gulp.dest(path.join(config.paths.src, '/app/constant')));
-});
+
 gulp.task('other:vendor',['other:vendor:js'], function() {
     return gulp.src([
             path.join(config.paths.src, '/vendor/**/*')
@@ -154,30 +144,6 @@ gulp.task('other:vendor',['other:vendor:js'], function() {
             return file.stat.isFile();
         }))
         .pipe(gulp.dest(path.join(config.paths.dist, '/vendor')));
-});
-gulp.task('other:plug', ['other:plug:css'], function() {
-    return gulp.src([
-            path.join(config.paths.src, '/plug/**/*.js'),
-        ])
-        .pipe($.filter(function(file) {
-            return file.stat.isFile();
-        }))
-        .pipe($.stripDebug())
-        .pipe($.uglify())
-        .pipe(gulp.dest(path.join(config.paths.dist, '/plug')));
-});
-gulp.task('other:plug:css', function() {
-    return gulp.src([
-            path.join(config.paths.src, '/plug/**/*'),
-            path.join('!' + config.paths.src, '/plug/**/*.scss'),
-            path.join('!' + config.paths.src, '/plug/**/*.js')
-        ])
-        .pipe(gulp.dest(path.join(config.paths.dist, '/plug')));
-});
-gulp.task('plug:compass', function() {
-    return gulp.src(path.join(config.paths.src, '/plug/**/*.scss'))
-        .pipe(sass().on("error", sass.logError))
-        .pipe(gulp.dest(path.join(config.paths.src, '/plug')));
 });
 gulp.task('other:libs',['other:libs:js'], function() {
     return gulp.src([
@@ -220,5 +186,5 @@ gulp.task('other:vendor:js', function() {
         .pipe(gulp.dest(path.join(config.paths.dist, '/vendor')));
 });
 
-gulp.task('build', $.sequence('prod-config', ['clean:dist', 'html'], ['images', 'fonts'], 'other:vendor', 'other:plug', 'other:libs', 'other:assets'));
+gulp.task('build', $.sequence('prod-config', ['clean:dist', 'html'], ['images', 'fonts'], 'other:vendor',  'other:libs', 'other:assets'));
 gulp.task('build:e2e', $.sequence('test-config', ['clean:dist', 'html'], ['images', 'fonts'], 'other:vendor', 'other:assets'));
